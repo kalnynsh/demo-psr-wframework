@@ -4,7 +4,7 @@ namespace Framework\Http;
 
 class Request
 {
-    private array $queryParams;
+    private array $queryParams = [];
     private array|null $parsedBody;
    
 
@@ -19,17 +19,24 @@ class Request
         return $this->queryParams;
     }
 
-    /**
-     * getParsedBody - return parsed body or null.
-     * 
-     * TODO *
-     * For Json request: json decode body.
-     * For Xml request: SimpleXml decode body.
-     *
-     * @return array|null
-     */
+    public function withQueryParams(array $query): self
+    {
+        $new = clone $this;
+        $new->queryParams = $query;
+
+        return $new;
+    }
+
     public function getParsedBody(): array|null
     {
         return $this->parsedBody;
+    }
+    
+    public function withParsedBody(array $dataBody): self
+    {
+        $new = clone $this;
+        $new->parsedBody = $dataBody;
+
+        return $new;
     }    
 }
