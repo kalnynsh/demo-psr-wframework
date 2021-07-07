@@ -13,5 +13,9 @@
         "psr-4": {
             "Framework\\": "src/Framework/"
         }
+    },
+    "scripts": {
+        "serve": "php -S 127.0.0.2:8000 -t public public/index.php",
+        "test": "phpunit --colors=always"
     }
 }
