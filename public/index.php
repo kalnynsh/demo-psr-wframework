@@ -1,6 +1,6 @@
 <?php
 
-use Framework\Http\Request;
+use Framework\Http\RequestFactory;
 
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
@@ -9,9 +9,10 @@ session_start();
 header('X-Developer: Denis');
 
 ### Initialization
-$request = new Request($_GET, $_POST);
+$request = RequestFactory::fromGlobals();
 
 ### Action
-$name = !empty($param = $request->getQueryParams()['name']) ? $param : 'Guest';
+$queryParams = $request->getQueryParams();
+$name = $queryParams['name'] ?? 'Guest';
 
 echo 'Hello, ' . $name . '!';
