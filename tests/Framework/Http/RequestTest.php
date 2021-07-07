@@ -7,16 +7,10 @@ use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $_GET = [];
-        $_POST = [];
-    }
 
     public function testEmpty(): void
     {
+        // Use default params
         $request = new Request();
 
         self::assertEquals([], $request->getQueryParams());
@@ -25,33 +19,27 @@ class RequestTest extends TestCase
 
     public function testQueryParams(): void
     {
-        $data = [
+         $request = new Request($getData = [
             'firstName' => 'John',
             'lastName' => 'Noland',
             'age' => 42,
-        ];
+        ], null);
 
-        $_GET = $data;
-
-        $request = new Request();
-
-        self::assertEquals($data, $request->getQueryParams());
+        self::assertEquals($getData, $request->getQueryParams());
         self::assertNull($request->getParsedBody(), '$_POST is null');
     }
 
     public function testParsedfBody(): void
     {
-        $data = [
+        $postData = [
             'firstName' => 'John',
             'lastName' => 'Noland',
             'age' => 42,
         ];
 
-        $_POST = $data;
+        $request = new Request([], $postData);
 
-        $request = new Request();
-
-        self::assertEquals($data, $request->getParsedBody());
+        self::assertEquals($postData, $request->getParsedBody());
         self::assertEquals([], $request->getQueryParams());
     }
 }

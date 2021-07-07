@@ -4,9 +4,19 @@ namespace Framework\Http;
 
 class Request
 {
+    private array $queryParams;
+    private array|null $parsedBody;
+   
+
+    public function __construct($queryParams = [], $parsedBody = null)
+    {
+        $this->queryParams = $queryParams;
+        $this->parsedBody = $parsedBody;
+    }   
+
     public function getQueryParams(): array
     {
-        return $_GET;
+        return $this->queryParams;
     }
 
     /**
@@ -20,31 +30,6 @@ class Request
      */
     public function getParsedBody(): array|null
     {
-        return $_POST ?: null;
-    }
-
-    /**
-     * getBody - return body of HTTP request, like Json, xml
-     *
-     * @return string
-     */
-    public function getBody(): string
-    {
-        return file_get_contents('php://input');
-    }
-
-    public function getCookies(): array
-    {
-        return $_COOKIE;
-    }
-
-    public function getSession(): array
-    {
-        return $_SESSION;
-    }
-
-    public function getServer(): array
-    {
-        return $_SERVER;
-    }
+        return $this->parsedBody;
+    }    
 }
