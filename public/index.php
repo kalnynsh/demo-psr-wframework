@@ -11,15 +11,8 @@ require 'vendor/autoload.php';
 
 session_start();
 
-
 ### Initialization
 $request = new Request();
-
-$name = !empty($param = $request->getQueryParams()['name']) ? $param : 'Guest';
-$lang = getLang($request, 'en');
-
-header('X-developer: Denis');
-echo 'Hello, ' . $name . '! Are you speaking ' . $lang . ' ?';
 
 
 function getLang(
@@ -45,3 +38,11 @@ function getLang(
 
         return $default;
 }
+
+
+$name = !empty($param = $request->getQueryParams()['name']) ? $param : 'Guest';
+$lang = getLang($request, 'en');
+
+header('X-developer: Denis');
+echo 'Hello, ' . $name . '! Are you speaking ' . $lang . ' ?';
+
