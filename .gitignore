@@ -1,3 +1,5 @@
 vendor/*/**
 
 projectInfo
+
+.phpunit.result.cache

@@ -19,11 +19,12 @@ class RequestTest extends TestCase
 
     public function testQueryParams(): void
     {
-         $request = new Request($getData = [
-            'firstName' => 'John',
-            'lastName' => 'Noland',
-            'age' => 42,
-        ], null);
+        $request = (new Request())
+            ->withQueryParams($getData = [
+                'firstName' => 'John',
+                'lastName' => 'Noland',
+                'age' => 42,
+            ]);
 
         self::assertEquals($getData, $request->getQueryParams());
         self::assertNull($request->getParsedBody(), '$_POST is null');
@@ -37,10 +38,10 @@ class RequestTest extends TestCase
             'age' => 42,
         ];
 
-        $request = new Request([], $postData);
+        $request = (new Request())
+            ->withParsedBody($postData);
 
         self::assertEquals($postData, $request->getParsedBody());
         self::assertEquals([], $request->getQueryParams());
     }
 }
-
