@@ -1,0 +1,16 @@
+{    
+    "config": {
+        "sort-packages": true
+    },
+    "require": {
+        "php": ">=8.0.0"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-latest"
+    },
+    "autoload": {
+        "psr-4": {
+            "Framework\\": "src/Framework/"
+        }
+    }
+}
