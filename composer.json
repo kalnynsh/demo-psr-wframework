@@ -11,7 +11,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Framework\\": "src/Framework/"
+            "Framework\\": "src/Framework/",
+            "Test\\": "tests/"
         }
     },
     "scripts": {
