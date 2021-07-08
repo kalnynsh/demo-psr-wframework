@@ -1,5 +1,7 @@
 <?php
 
+namespace Test\Framework\Http;
+
 use Framework\Http\RequestFactory;
 use PHPUnit\Framework\TestCase;
 
