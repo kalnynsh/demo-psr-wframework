@@ -3,3 +3,5 @@ vendor/*/**
 projectInfo
 
 .phpunit.result.cache
+
+.directory
