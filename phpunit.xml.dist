@@ -3,6 +3,7 @@
   <coverage>
     <include>
       <directory suffix=".php">./src/Framework/</directory>
+      <directory suffix=".php">./tests/</directory>
     </include>
   </coverage>
   <testsuites>
