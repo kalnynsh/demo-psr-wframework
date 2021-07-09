@@ -2,16 +2,15 @@
 
 namespace Test\Framework\Http;
 
-use Laminas\Diactoros\Response;
-use Laminas\Diactoros\StreamFactory;
+use Laminas\Diactoros\Response\HtmlResponse;
 use PHPUnit\Framework\TestCase;
 
 class ResponseTest extends TestCase
 {
     public function testEmpty(): void
     {
-        $stream = (new StreamFactory)->createStream($content = 'HTTP content');
-        $response = new Response($stream);
+        $content = 'HTTP content';
+        $response = new HtmlResponse($content);
  
         self::assertEquals($content, $response->getBody()->getContents());
         self::assertEquals(200, $response->getStatusCode());
@@ -20,8 +19,8 @@ class ResponseTest extends TestCase
 
     public function testStatus404(): void
     {
-        $stream = (new StreamFactory)->createStream($content = 'HTTP content');
-        $response = new Response($stream, $statusCode = 404);
+        $content = 'HTTP content';
+        $response = new HtmlResponse($content, $statusCode = 404);
  
         self::assertEquals($content, $response->getBody()->getContents());
         self::assertEquals(mb_strlen($content), $response->getBody()->getSize());
@@ -32,7 +31,7 @@ class ResponseTest extends TestCase
 
     public function testHeaders(): void
     {       
-        $response = (new Response($body = 'HTTP BODY'))
+        $response = (new HtmlResponse($content = 'HTTP content'))
             ->withHeader($headerName1 = 'X-Name-1', $headerValue1 = 'Value_1')
             ->withHeader($headerName2 = 'X-Name-2', $headerValue2 = 'Value_2');
          
@@ -40,6 +39,7 @@ class ResponseTest extends TestCase
         self::assertEquals([
             $headerName1 => [$headerValue1],
             $headerName2 => [$headerValue2],
+            'content-type' => ['text/html; charset=utf-8'],
         ], $response->getHeaders());
     }
 }

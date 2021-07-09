@@ -1,8 +1,7 @@
 <?php
 
 use Laminas\Diactoros\ServerRequestFactory;
-use Laminas\Diactoros\Response;
-use Laminas\Diactoros\StreamFactory;
+use Laminas\Diactoros\Response\HtmlResponse;
 
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
@@ -22,10 +21,8 @@ $request = ServerRequestFactory::fromGlobals(
 $queryParams = $request->getQueryParams();
 $name = $queryParams['name'] ?? 'Guest';
 $content = 'Hello, ' . $name . '!';
-$stream = (new StreamFactory)->createStream($content);
 
-$response = (new Response())
-    ->withBody($stream)
+$response = (new HtmlResponse($content))
     ->withHeader('X-Developer', 'Denis');
 
 header(
