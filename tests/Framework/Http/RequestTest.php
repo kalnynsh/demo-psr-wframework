@@ -2,7 +2,7 @@
 
 namespace Test\Framework\Http;
 
-use Framework\Http\Request;
+use Laminas\Diactoros\ServerRequest;
 use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase
@@ -11,7 +11,7 @@ class RequestTest extends TestCase
     public function testEmpty(): void
     {
         // Use default params
-        $request = new Request();
+        $request = new ServerRequest();
 
         self::assertEquals([], $request->getQueryParams());
         self::assertNull($request->getParsedBody(), '$_POST is null');
@@ -19,7 +19,7 @@ class RequestTest extends TestCase
 
     public function testQueryParams(): void
     {
-        $request = (new Request())
+        $request = (new ServerRequest())
             ->withQueryParams($getData = [
                 'firstName' => 'John',
                 'lastName' => 'Noland',
@@ -38,7 +38,7 @@ class RequestTest extends TestCase
             'age' => 42,
         ];
 
-        $request = (new Request())
+        $request = (new ServerRequest())
             ->withParsedBody($postData);
 
         self::assertEquals($postData, $request->getParsedBody());
