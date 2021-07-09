@@ -1,7 +1,8 @@
 <?php
 
-use Framework\Http\RequestFactory;
-use Framework\Http\Response;
+use Laminas\Diactoros\ServerRequestFactory;
+use Laminas\Diactoros\Response;
+use Laminas\Diactoros\StreamFactory;
 
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
@@ -9,15 +10,22 @@ require 'vendor/autoload.php';
 session_start();
 
 ### Initialization
-$request = RequestFactory::fromGlobals();
+$request = ServerRequestFactory::fromGlobals(
+    $server = $_SERVER,
+    $query = $_GET,
+    $body = $_POST,
+    $cookies = $_COOKIE,
+    $files =  $_FILES
+);
 
 ### Action
 $queryParams = $request->getQueryParams();
 $name = $queryParams['name'] ?? 'Guest';
-$body = 'Hello, ' . $name . '!';
+$content = 'Hello, ' . $name . '!';
+$stream = (new StreamFactory)->createStream($content);
 
 $response = (new Response())
-    ->withBody($name)
+    ->withBody($stream)
     ->withHeader('X-Developer', 'Denis');
 
 header(
@@ -28,7 +36,7 @@ header(
 );
 
 foreach ($response->getHeaders() as $name => $value) {
-    header($name . ': ' . $value);
+    header($name . ': ' . implode(',', (array)$value));
 }
 
 echo $response->getBody();
