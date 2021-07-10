@@ -1,8 +1,8 @@
 <?php
 
-use Framework\Http\ResponseSender;
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
@@ -26,5 +26,5 @@ $content = 'Hello, ' . $name . '!';
 $response = (new HtmlResponse($content))
     ->withHeader('X-Developer', 'Denis');
 
-$emmiter = new ResponseSender();
-$emmiter->send($response);
+$emmiter = new SapiEmitter();
+$emmiter->emit($response);
