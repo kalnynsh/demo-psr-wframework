@@ -1,5 +1,6 @@
 <?php
 
+use Framework\Http\ResponseSender;
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\Diactoros\Response\HtmlResponse;
 
@@ -25,15 +26,5 @@ $content = 'Hello, ' . $name . '!';
 $response = (new HtmlResponse($content))
     ->withHeader('X-Developer', 'Denis');
 
-header(
-    'HTTP/1.1 '
-    . $response->getStatusCode() 
-    . ' ' 
-    . $response->getReasonPhrase()
-);
-
-foreach ($response->getHeaders() as $name => $value) {
-    header($name . ': ' . implode(',', (array)$value));
-}
-
-echo $response->getBody();
+$emmiter = new ResponseSender();
+$emmiter->send($response);
