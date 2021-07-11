@@ -2,12 +2,12 @@
 
 namespace Test\Framework\Http;
 
-use Framework\Http\Router\Exception\RequestNotMatchedException;
 use Laminas\Diactoros\Uri;
 use PHPUnit\Framework\TestCase;
 use Framework\Http\Router\Router;
 use Laminas\Diactoros\ServerRequest;
 use Framework\Http\Router\RouteCollection;
+use Framework\Http\Router\Exception\RequestNotMatchedException;
 
 class RouterTest extends TestCase
 {

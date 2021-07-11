@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework\Http\Router;
+namespace Framework\Http\Router\Route;
 
 use in_array;
 use preg_match;
@@ -8,10 +8,12 @@ use preg_match;
 use array_filter;
 use array_key_exists;
 use preg_replace_callback;
+use Framework\Http\Router\Result;
 
+use Framework\Http\Router\Route\Route;
 use Psr\Http\Message\ServerRequestInterface;
 
-class Route
+class RegexpRoute implements Route
 {
     private string $name;
     private string $pattern;
