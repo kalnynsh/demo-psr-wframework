@@ -1,10 +1,13 @@
 <?php
 
+use Framework\Http\Router\Router;
+use Framework\Http\Router\RouteCollection;
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\JsonResponse;
-use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Psr\Http\Message\ServerRequestInterface;
+use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
+use Framework\Http\Router\Exception\RequestNotMatchedException;
 
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
@@ -12,69 +15,80 @@ require 'vendor/autoload.php';
 session_start();
 
 ### Initialization
-$request = ServerRequestFactory::fromGlobals();
 
-### Actions
-$path = $request->getUri()->getPath();
+$routes = new RouteCollection();
 
-if ($path === '/') {
+$routes->get('home', '/', function (ServerRequestInterface $request) {
+    $content = 'Hello '
+        . ($request->getQueryParams()['name'] ?? 'Guest')
+        . '!' ;
     
-    $action = function (ServerRequestInterface $request) {
-        $content = 'Hello, ' . ($request->getQueryParams()['name'] ?? 'Guest') . '!';
-        
-        return new HtmlResponse($content);
-    };
+    return new HtmlResponse($content);
+});
 
-} elseif ($path === '/about') {
 
-    $action = function () {
-        return new HtmlResponse('I am very simple site;)');
-    };
+$routes->get(
+    'about',
+    '/about',
+    function() {
+        return new HtmlResponse('I am the simple about page.');
+    }
+);
 
-} elseif ($path === '/blog') {
-   
-    $action = function () {
+$routes->get(
+    'blog',
+    '/blog',
+    function() {
         return new JsonResponse([
-            [
-                'id' => 2, 'title' => 'The second post',
-            ],
-            [
-                'id' => 1, 'title' => 'The first post',
-            ]
+            ['id' => 2, 'title' => 'The second post'],
+            ['id' => 1, 'title' => 'The first post'],
         ]);
-    };
+    }
+);
 
-} elseif (preg_match('#^/blog/(?P<id>\d+)#i', $path, $matches)) {
-    
-    $request = $request->withAttribute('id', $matchers['id']);
-
-    $action = function (ServerRequestInterface $request) {
-        $maxPastsCount = 2;
-
+$routes->get(
+    'blog_show',
+    '/blog/{id}',
+    function(ServerRequestInterface $request) {
         $id = $request->getAttribute('id');
 
-        if ($id > $maxPastsCount) {
-            return new JsonResponse(['error' => 'Undefined page'], 404);
+        if ($id > 2) {
+            return new HtmlResponse('Undefined page', 404);
         }
-    
-        if ($id <= $maxPastsCount) {
-            return new JsonResponse(['id' => $id, 'title' => 'Post #' . $id]);
-        }
-    };
 
-} 
+        return new JsonResponse(
+            ['id' => $id, 'title' => 'Post #' . $id],
+            );
+    },
+    ['id' => '\d+']
+);
 
-if ($action) {
+$router = new Router($routes);
+
+# Running
+
+$request = ServerRequestFactory::fromGlobals();
+
+try {
+    $result = $router->match($request);
+
+    foreach ($result->getAttributes() as $attribute => $value) {
+        $request = $request->withAttribute($attribute, $value);
+    }
+
+    /** @var callable $action */
+    $action = $result->getHandler();
     $response = $action($request);
-}
 
-if (! $action) {
+} catch (RequestNotMatchedException $exc) {
     $response = new HtmlResponse('Undefined page', 404);
 }
 
-
 ## Postprosessing
+
 $response = $response->withHeader('X-Developer', 'Denis');
+
+## Sending
 
 $emmiter = new SapiEmitter();
 $emmiter->emit($response);
