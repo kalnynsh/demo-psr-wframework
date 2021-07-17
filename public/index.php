@@ -17,16 +17,16 @@ session_start();
 
 $routes = new RouteCollection();
 
-$routes->get('home', '/', new Action\Home\IndexAction());
+$routes->get('home', '/', Action\Home\IndexAction::class);
 
-$routes->get('about', '/about', new Action\Home\AboutAction());
+$routes->get('about', '/about', Action\Home\AboutAction::class);
 
-$routes->get('blog', '/blog', new Action\Blog\IndexAction());
+$routes->get('blog', '/blog', Action\Blog\IndexAction::class);
 
 $routes->get(
     'blog_show',
     '/blog/{id}', 
-    new Action\Blog\ShowAction(), 
+    Action\Blog\ShowAction::class, 
     ['id' => '\d+']
 );
 
@@ -43,8 +43,11 @@ try {
         $request = $request->withAttribute($attribute, $value);
     }
 
+    
+    $handler = $result->getHandler();
+
     /** @var callable $action */
-    $action = $result->getHandler();
+    $action = is_string($handler) ? new $handler() : $handler;
     $response = $action($request);
 
 } catch (RequestNotMatchedException $exc) {
