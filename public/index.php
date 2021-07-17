@@ -1,11 +1,10 @@
 <?php
 
+use App\Http\Action;
 use Framework\Http\Router\Router;
 use Framework\Http\Router\RouteCollection;
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\Diactoros\Response\HtmlResponse;
-use Laminas\Diactoros\Response\JsonResponse;
-use Psr\Http\Message\ServerRequestInterface;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 
@@ -18,48 +17,16 @@ session_start();
 
 $routes = new RouteCollection();
 
-$routes->get('home', '/', function (ServerRequestInterface $request) {
-    $content = 'Hello '
-        . ($request->getQueryParams()['name'] ?? 'Guest')
-        . '!' ;
-    
-    return new HtmlResponse($content);
-});
+$routes->get('home', '/', new Action\Home\IndexAction());
 
+$routes->get('about', '/about', new Action\Home\AboutAction());
 
-$routes->get(
-    'about',
-    '/about',
-    function() {
-        return new HtmlResponse('I am the simple about page.');
-    }
-);
-
-$routes->get(
-    'blog',
-    '/blog',
-    function() {
-        return new JsonResponse([
-            ['id' => 2, 'title' => 'The second post'],
-            ['id' => 1, 'title' => 'The first post'],
-        ]);
-    }
-);
+$routes->get('blog', '/blog', new Action\Blog\IndexAction());
 
 $routes->get(
     'blog_show',
-    '/blog/{id}',
-    function(ServerRequestInterface $request) {
-        $id = $request->getAttribute('id');
-
-        if ($id > 2) {
-            return new HtmlResponse('Undefined page', 404);
-        }
-
-        return new JsonResponse(
-            ['id' => $id, 'title' => 'Post #' . $id],
-            );
-    },
+    '/blog/{id}', 
+    new Action\Blog\ShowAction(), 
     ['id' => '\d+']
 );
 
