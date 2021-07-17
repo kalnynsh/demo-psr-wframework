@@ -35,7 +35,7 @@ class RegexpRoute implements Route
         $this->tokens = $tokens;
     }
 
-    public function match(ServerRequestInterface $request): Result|null
+    public function match(ServerRequestInterface $request): ?Result
     {
 
         if ($this->methods && ! in_array($request->getMethod(), $this->methods, true)) {

@@ -12,10 +12,9 @@ class ShowAction
     public function __invoke(ServerRequestInterface $request): Response
     {
         $id = $request->getAttribute('id');
-        $request->withAttribute('total', 2);
-        $total = $request->getAttribute('total');
+        $request = $request->withAttribute('total', 2);
 
-        if ($id > $total) {
+        if ($id > $request->getAttribute('total')) {
             return new HtmlResponse('Undefined page', 404);
         }
 
