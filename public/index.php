@@ -28,7 +28,14 @@ $routes->get('home', '/', Action\Home\IndexAction::class);
 
 $routes->get('about', '/about', Action\Home\AboutAction::class);
 
-$routes->get('cabinet', '/cabinet', new Action\Home\CabinetAction($usersParams['users']));
+$routes->get(
+    'cabinet', 
+    '/cabinet',
+    new Action\Home\BasicAuthActionDecorator(
+        new Action\Home\CabinetAction(),
+        $usersParams['users']
+    )    
+);
 
 $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
 
