@@ -4,13 +4,12 @@ namespace Framework\Http\Router;
 
 use Aura\Router\RouterContainer;
 use Framework\Http\Router\Result;
-use Framework\Http\Router\Route\Route;
 use Aura\Router\Exception\RouteNotFound;
 use Psr\Http\Message\ServerRequestInterface;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 use Framework\Http\Router\Exception\RouteNotFoundException;
 
-class AuraRouterAdapter implements Route
+class AuraRouterAdapter implements Router
 {
     private $aura;
 
