@@ -22,6 +22,8 @@ $routes->get('home', '/', Action\Home\IndexAction::class);
 
 $routes->get('about', '/about', Action\Home\AboutAction::class);
 
+$routes->get('cabinet', '/cabinet', Action\Home\CabinetAction::class);
+
 $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
 
 $routes->get(
