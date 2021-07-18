@@ -23,12 +23,12 @@ class IndexActionTest extends TestCase
     public function testJohn(): void
     {
         $request = (new ServerRequest())
-            ->withQueryParams(['name' => 'John%20Noland']);
+            ->withQueryParams(['name' => 'John Noland']);
 
         $action = new IndexAction();
 
         $response = $action($request);
 
-        self::assertEquals('Hello, John Noland!', $response->getBody()->getContents());
+        self::assertEquals('Hello John Noland!', $response->getBody()->getContents());
     }
 }

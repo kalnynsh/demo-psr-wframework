@@ -20,7 +20,8 @@ class ShowActionTest extends TestCase
         self::assertEquals(200, $response->getStatusCode());
         self::assertJsonStringEqualsJsonString(
             json_encode([
-                ['id' => $id, 'title' => 'The Post #' . $id]
+                'id' => $id, 
+                'title' => 'The Post #' . $id
             ]),
             $response->getBody()->getContents()
         );
