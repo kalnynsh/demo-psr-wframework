@@ -9,5 +9,5 @@ interface Route
 {
     public function match(ServerRequestInterface $request): ?Result;
     
-    public function generate($routeName, array $params = []): ?string;
+    public function generate(string $routeName, array $params = []): string;
 }
