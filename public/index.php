@@ -15,6 +15,12 @@ require 'vendor/autoload.php';
 session_start();
 
 ### Initialization
+$usersParams = [
+    'users' => [
+        'admin' => 'adminPassword',
+    ]
+];
+
 $auraRouterContainer = new RouterContainer();
 $routes = $auraRouterContainer->getMap();
 
@@ -22,7 +28,7 @@ $routes->get('home', '/', Action\Home\IndexAction::class);
 
 $routes->get('about', '/about', Action\Home\AboutAction::class);
 
-$routes->get('cabinet', '/cabinet', Action\Home\CabinetAction::class);
+$routes->get('cabinet', '/cabinet', new Action\Home\CabinetAction($usersParams['users']));
 
 $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
 
