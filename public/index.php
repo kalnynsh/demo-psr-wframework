@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Action;
+use App\Http\Middleware;
 use Aura\Router\RouterContainer;
 use Framework\Http\ActionResolver;
 use Framework\Http\Router\AuraRouterAdapter;
@@ -8,6 +9,7 @@ use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
+use Psr\Http\Message\ServerRequestInterface;
 
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
@@ -31,10 +33,14 @@ $routes->get('about', '/about', Action\Home\AboutAction::class);
 $routes->get(
     'cabinet', 
     '/cabinet',
-    new Action\Home\BasicAuthActionDecorator(
-        new Action\Home\CabinetAction(),
-        $usersParams['users']
-    )    
+    function (ServerRequestInterface $request) use ($usersParams) {
+        $auth = new Middleware\BasicAuthMiddleware($usersParams['users']);
+        $cabinet = new Action\Home\CabinetAction();
+
+        return $auth($request, function(ServerRequestInterface $request) use ($cabinet) {
+            return $cabinet($request);
+        });
+    }
 );
 
 $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
