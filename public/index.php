@@ -33,13 +33,19 @@ $routes->get('about', '/about', Action\Home\AboutAction::class);
 $routes->get(
     'cabinet', 
     '/cabinet',
+    
     function (ServerRequestInterface $request) use ($usersParams) {
+
+        $profiler = new Middleware\ProfilerMiddleware();
         $auth = new Middleware\BasicAuthMiddleware($usersParams['users']);
         $cabinet = new Action\Home\CabinetAction();
 
-        return $auth($request, function(ServerRequestInterface $request) use ($cabinet) {
-            return $cabinet($request);
+        return $profiler($request, function (ServerRequestInterface $request) use ($auth, $cabinet) {
+            return $auth($request, function(ServerRequestInterface $request) use ($cabinet) {
+                                            return $cabinet($request);
+                                    });
         });
+        
     }
 );
 
