@@ -7,7 +7,6 @@ use Framework\Http\ActionResolver;
 use Framework\Http\Pipeline\Pipeline;
 use Framework\Http\Router\AuraRouterAdapter;
 use Laminas\Diactoros\ServerRequestFactory;
-use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 use Psr\Http\Message\ServerRequestInterface;
@@ -42,9 +41,7 @@ $routes->get(
         $pipeline->pipe(new Middleware\BasicAuthMiddleware($usersParams['users']));
         $pipeline->pipe(new Action\Home\CabinetAction());
 
-        return $pipeline($request, function () {
-            return new HtmlResponse('Undefined page', 404);
-        });
+        return $pipeline($request, new Middleware\NotFoundHandler());
         
     }
 );
@@ -70,14 +67,14 @@ try {
         $request = $request->withAttribute($attribute, $value);
     }
 
-
     $handler = $result->getHandler();
 
     /** @var callable $action */
     $action = $resolver->resolve($handler);
     $response = $action($request);
-} catch (RequestNotMatchedException $exc) {
-    $response = new HtmlResponse('Undefined page', 404);
+} catch (RequestNotMatchedException $exception) {
+    $handler = new Middleware\NotFoundHandler();
+    $respponse = $handler($request);
 }
 
 ## Postprosessing
