@@ -50,6 +50,10 @@ $routes->get(
 
 $router = new AuraRouterAdapter($auraRouterContainer);
 $resolver = new MiddlewareResolver();
+$pipeline = new Pipeline();
+
+/** Global ProfileMiddleware */
+$pipeline->pipe($resolver->resolve(Middleware\ProfilerMiddleware::class));
 
 # Running
 $request = ServerRequestFactory::fromGlobals();
@@ -62,17 +66,14 @@ try {
     }
 
     $handlers = $result->getHandler();
-    $pipeline = new Pipeline();
 
     foreach (is_array($handlers) ? $handlers : [$handlers] as $handler) {
         $pipeline->pipe($resolver->resolve($handler));
     }
+    
+} catch (RequestNotMatchedException $exception) { }
 
-    $response = $pipeline($request, new Middleware\NotFoundHandler());
-} catch (RequestNotMatchedException $exception) {
-    $handler = new Middleware\NotFoundHandler();
-    $respponse = $handler($request);
-}
+$response = $pipeline($request, new Middleware\NotFoundHandler());
 
 ## Postprosessing
 
