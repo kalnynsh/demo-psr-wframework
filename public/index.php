@@ -49,7 +49,7 @@ $routes->get(
 
 $router = new AuraRouterAdapter($auraRouterContainer);
 $resolver = new MiddlewareResolver();
-$app = new Application($resolver);
+$app = new Application($resolver, new Middleware\NotFoundHandler());
 
 /** Global ProfileMiddleware */
 $app->pipe(Middleware\ProfilerMiddleware::class);
@@ -68,7 +68,7 @@ try {
     
 } catch (RequestNotMatchedException $exception) { }
 
-$response = $app($request, new Middleware\NotFoundHandler());
+$response = $app->run($request);
 
 ## Postprosessing
 
