@@ -59,7 +59,8 @@ $app->pipe(new Middleware\ErrorHandlerMiddleware($params['debug']));
 /** Global ProfileMiddleware */
 $app->pipe(Middleware\ProfilerMiddleware::class);
 $app->pipe(Middleware\CredentialsMiddleware::class);
-$app->pipe(new \Framework\Http\Middleware\RouteMiddleware($router, $resolver));
+$app->pipe(new \Framework\Http\Middleware\RouteMiddleware($router));
+$app->pipe(new \Framework\Http\Middleware\DispatcherMiddleware($resolver));
 
 # Running
 $request = ServerRequestFactory::fromGlobals();
