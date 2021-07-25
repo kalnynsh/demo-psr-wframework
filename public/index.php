@@ -53,6 +53,7 @@ $app = new Application($resolver, new Middleware\NotFoundHandler());
 
 /** Global ProfileMiddleware */
 $app->pipe(Middleware\ProfilerMiddleware::class);
+$app->pipe(Middleware\CredentialsMiddleware::class);
 
 # Running
 $request = ServerRequestFactory::fromGlobals();
@@ -70,9 +71,6 @@ try {
 
 $response = $app->run($request);
 
-## Postprosessing
-
-$response = $response->withHeader('X-Developer', 'Denis');
 
 ## Sending
 
