@@ -22,6 +22,10 @@ $usersParams = [
     ]
 ];
 
+$params = [
+    'debug' => true,
+];
+
 $auraRouterContainer = new RouterContainer();
 $routes = $auraRouterContainer->getMap();
 
@@ -50,6 +54,8 @@ $routes->get(
 $router = new AuraRouterAdapter($auraRouterContainer);
 $resolver = new MiddlewareResolver();
 $app = new Application($resolver, new Middleware\NotFoundHandler());
+
+$app->pipe(new Middleware\ErrorHandlerMiddleware($params['debug']));
 
 /** Global ProfileMiddleware */
 $app->pipe(Middleware\ProfilerMiddleware::class);
