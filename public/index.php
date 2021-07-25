@@ -8,7 +8,6 @@ use Framework\Http\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
-use Framework\Http\Router\Exception\RequestNotMatchedException;
 
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
@@ -60,23 +59,11 @@ $app->pipe(new Middleware\ErrorHandlerMiddleware($params['debug']));
 /** Global ProfileMiddleware */
 $app->pipe(Middleware\ProfilerMiddleware::class);
 $app->pipe(Middleware\CredentialsMiddleware::class);
+$app->pipe(new \Framework\Http\Middleware\RouteMiddleware($router, $resolver));
 
 # Running
 $request = ServerRequestFactory::fromGlobals();
-
-try {
-    $result = $router->match($request);
-
-    foreach ($result->getAttributes() as $attribute => $value) {
-        $request = $request->withAttribute($attribute, $value);
-    }
-
-    $app->pipe($result->getHandler());
-    
-} catch (RequestNotMatchedException $exception) { }
-
 $response = $app->run($request);
-
 
 ## Sending
 
