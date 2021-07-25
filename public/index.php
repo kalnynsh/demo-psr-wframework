@@ -67,9 +67,19 @@ try {
 
     $handlers = $result->getHandler();
 
-    foreach (is_array($handlers) ? $handlers : [$handlers] as $handler) {
-        $pipeline->pipe($resolver->resolve($handler));
+    if (\is_array($handlers)) {
+        $innerMiddleware = new Pipeline();
+
+        foreach ($handlers as $item) {
+            $innerMiddleware->pipe($resolver->resolve($item));
+        }
     }
+
+    if (!\is_array($handlers)) {
+        $innerMiddleware = $resolver->resolve($handlers);
+    }
+
+    $pipeline->pipe($innerMiddleware);
     
 } catch (RequestNotMatchedException $exception) { }
 
