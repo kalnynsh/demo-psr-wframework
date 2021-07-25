@@ -3,13 +3,12 @@
 use App\Http\Action;
 use App\Http\Middleware;
 use Aura\Router\RouterContainer;
+use Framework\Http\Application;
 use Framework\Http\MiddlewareResolver;
-use Framework\Http\Pipeline\Pipeline;
 use Framework\Http\Router\AuraRouterAdapter;
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
-use Psr\Http\Message\ServerRequestInterface;
 
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
@@ -50,10 +49,10 @@ $routes->get(
 
 $router = new AuraRouterAdapter($auraRouterContainer);
 $resolver = new MiddlewareResolver();
-$pipeline = new Pipeline();
+$app = new Application($resolver);
 
 /** Global ProfileMiddleware */
-$pipeline->pipe($resolver->resolve(Middleware\ProfilerMiddleware::class));
+$app->pipe(Middleware\ProfilerMiddleware::class);
 
 # Running
 $request = ServerRequestFactory::fromGlobals();
@@ -65,13 +64,11 @@ try {
         $request = $request->withAttribute($attribute, $value);
     }
 
-    $handlers = $result->getHandler();
-
-    $pipeline->pipe($resolver->resolve($handlers));
+    $app->pipe($result->getHandler());
     
 } catch (RequestNotMatchedException $exception) { }
 
-$response = $pipeline($request, new Middleware\NotFoundHandler());
+$response = $app($request, new Middleware\NotFoundHandler());
 
 ## Postprosessing
 
