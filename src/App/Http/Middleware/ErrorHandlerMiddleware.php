@@ -16,11 +16,15 @@ class ErrorHandlerMiddleware
         $this->isDebugMode = $isDebugMode;
     }
 
-    public function __invoke(ServerRequestInterface $request, callable $next): ResponseInterface
+    public function __invoke(
+        ServerRequestInterface $request,
+        ResponseInterface $response, 
+        callable $next
+    ): ResponseInterface
     {
         try {
 
-            return $next($request);
+            return $next($request, $response);
             
         } catch (\Throwable $exception) {
 

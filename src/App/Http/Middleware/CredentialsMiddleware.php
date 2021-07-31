@@ -7,10 +7,14 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class CredentialsMiddleware
 {
-    public function __invoke(ServerRequestInterface $request, callable $next): ResponseInterface
+    public function __invoke(
+        ServerRequestInterface $request,
+        ResponseInterface $response, 
+        callable $next
+    ): ResponseInterface
     {
         /** @var ResponseInterface $response */
-        $response = $next($request);
+        $response = $next($request, $response);
 
         return $response->withHeader('X-Devloper', 'DenisAK');
     }

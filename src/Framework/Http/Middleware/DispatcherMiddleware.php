@@ -3,8 +3,9 @@
 namespace Framework\Http\Middleware;
 
 use Framework\Http\Router\Result;
-use Framework\Http\MiddlewareResolver;
 use Psr\Http\Message\ServerRequestInterface;
+use Framework\Http\Pipeline\MiddlewareResolver;
+use Psr\Http\Message\ResponseInterface;
 
 class DispatcherMiddleware
 {
@@ -15,8 +16,11 @@ class DispatcherMiddleware
         $this->resolver = $resolver;
     }
 
-    public function __invoke(ServerRequestInterface $request, callable $next)
-    {
+    public function __invoke(
+        ServerRequestInterface $request, 
+        ResponseInterface $response, 
+        callable $next
+    ) {
         /** @var Result $result */
         if (! $result = $request->getAttribute(Result::class)) {
             return $next($request);
@@ -24,6 +28,6 @@ class DispatcherMiddleware
 
         $middleware = $this->resolver->resolve($result->getHandler());
 
-        return $middleware($request, $next);
+        return $middleware($request, $response, $next);
     }
 }

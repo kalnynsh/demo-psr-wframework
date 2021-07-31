@@ -2,11 +2,12 @@
 
 use App\Http\Action;
 use App\Http\Middleware;
-use Aura\Router\RouterContainer;
 use Framework\Http\Application;
-use Framework\Http\MiddlewareResolver;
-use Framework\Http\Router\AuraRouterAdapter;
+use Aura\Router\RouterContainer;
 use Laminas\Diactoros\ServerRequestFactory;
+use Framework\Http\Router\AuraRouterAdapter;
+use Framework\Http\Pipeline\MiddlewareResolver;
+use Laminas\Diactoros\Response;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 
 chdir(dirname(__DIR__));
@@ -64,7 +65,7 @@ $app->pipe(new \Framework\Http\Middleware\DispatcherMiddleware($resolver));
 
 # Running
 $request = ServerRequestFactory::fromGlobals();
-$response = $app->run($request);
+$response = $app->run($request, new Response());
 
 ## Sending
 

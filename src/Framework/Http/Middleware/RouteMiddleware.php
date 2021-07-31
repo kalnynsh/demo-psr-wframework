@@ -6,6 +6,7 @@ use Framework\Http\Router\Result;
 use Framework\Http\Router\Router;
 use Psr\Http\Message\ServerRequestInterface;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
+use Psr\Http\Message\ResponseInterface;
 
 class RouteMiddleware
 {
@@ -16,8 +17,11 @@ class RouteMiddleware
         $this->router = $router;
     }
 
-    public function __invoke(ServerRequestInterface $request, callable $next)
-    {
+    public function __invoke(
+        ServerRequestInterface $request,
+        ResponseInterface $response, 
+        callable $next
+    ) {
         try {
             $result = $this->router->match($request);
 
@@ -25,9 +29,13 @@ class RouteMiddleware
                 $request->withAttribute($attributeName, $attributeValue);
             }
 
-            return $next($request->withAttribute(Result::class, $result));
+            return $next(
+                $request->withAttribute(Result::class, $result), 
+                $response
+            );
+            
         } catch (RequestNotMatchedException $e) {
-            return $next($request);
+            return $next($request, $response);
         }
     }
 }
