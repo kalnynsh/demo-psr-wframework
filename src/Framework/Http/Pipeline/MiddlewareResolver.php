@@ -48,7 +48,7 @@ class MiddlewareResolver
                 $method = $reflection->getMethod('__invoke');
                 $parameters = $method->getParameters();
 
-                if (\count($parameters) === 2 && is_callable($parameters[1])) {
+                if (\count($parameters) === 2 && $parameters[1]->isCallable()) {
                     return function (
                         ServerRequestInterface $request, 
                         ResponseInterface $response, 
