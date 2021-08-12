@@ -11,7 +11,7 @@ use Framework\Http\Router\Exception\RouteNotFoundException;
 
 class AuraRouterAdapter implements Router
 {
-    private $aura;
+    private RouterContainer $aura;
 
     public function __construct(RouterContainer $aura)
     {
@@ -37,22 +37,22 @@ class AuraRouterAdapter implements Router
     }
 
     /**
-     * generate method
+     * Generate route by given name and params
      *
-     * @param string $name
-     * @param array $params
+     * @param string $routeName
+     * @param array  $params
      * 
      * @throws RouteNotFoundException
-     * @return string
+     * @return string|false
      */
-    public function generate(string $name, array $params = []): string
+    public function generate(string $routeName, array $params = []): string|false
     {
         $generator = $this->aura->getGenerator();
 
         try {
-            return $generator->generate($name, $params);
+            return $generator->generate($routeName, $params);
         } catch (RouteNotFound $exc) {
-            throw new RouteNotFoundException($name, $params, $exc);
+            throw new RouteNotFoundException($routeName, $params, $exc);
         }
     }
 }
