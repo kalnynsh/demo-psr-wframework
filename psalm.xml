@@ -4,15 +4,14 @@
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
     xmlns:xi="http://www.w3.org/2001/XInclude"
+    errorLevel="2"
 >
     <projectFiles>
         <directory name="src" />
+        <directory name="public" />
         <directory name="tests" />
         <ignoreFiles>
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
-    <psalm
-        errorLevel="2"
-    />
 </psalm>
