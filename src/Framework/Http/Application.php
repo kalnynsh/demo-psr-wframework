@@ -2,33 +2,41 @@
 
 namespace Framework\Http;
 
-use Framework\Http\Pipeline\Pipeline;
+// use Framework\Http\Pipeline\Pipeline;
 use Psr\Http\Message\ResponseInterface;
+use Laminas\Stratigility\MiddlewarePipe;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Framework\Http\Pipeline\MiddlewareResolver;
+use Laminas\Stratigility\MiddlewarePipeInterface;
 
-class Application extends Pipeline
+class Application
 {
-    private $resolver;
-    private $default;
+    private MiddlewareResolver       $resolver;
+    private MiddlewarePipeInterface  $middlewarePipe;
 
-    public function __construct(MiddlewareResolver $resolver, callable $default)
+    public function __construct(MiddlewareResolver $resolver)
     {
-        parent::__construct();
-        $this->resolver = $resolver;
-        $this->default = $default;
+        $this->middlewarePipe = new MiddlewarePipe();
+        $this->resolver = $resolver;        
     }
 
+    /** @param MiddlewareInterface|class-string $middleware */
     public function pipe($middleware): void
     {
-        parent::pipe($this->resolver->resolve($middleware));
+        $this
+            ->middlewarePipe
+            ->pipe(
+                $this->resolver->resolve($middleware)
+            );
     }
 
     public function run(
-        ServerRequestInterface $request,
-        ResponseInterface $response
+        ServerRequestInterface $request
     ): ResponseInterface
     {
-        return $this($request, $response, $this->default);
+        return $this
+            ->middlewarePipe
+            ->handle($request);
     }
 }
