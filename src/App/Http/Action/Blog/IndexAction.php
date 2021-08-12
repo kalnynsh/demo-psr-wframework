@@ -2,12 +2,14 @@
 
 namespace App\Http\Action\Blog;
 
-use Laminas\Diactoros\Response;
+use Psr\Http\Message\ResponseInterface;
 use Laminas\Diactoros\Response\JsonResponse;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class IndexAction
+class IndexAction implements RequestHandlerInterface
 {
-    public function __invoke(): Response
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return new JsonResponse(
             [

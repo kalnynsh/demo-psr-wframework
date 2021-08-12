@@ -2,12 +2,14 @@
 
 namespace App\Http\Action\Home;
 
-use Laminas\Diactoros\Response;
+use Psr\Http\Message\ResponseInterface;
 use Laminas\Diactoros\Response\HtmlResponse;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class AboutAction
+class AboutAction implements RequestHandlerInterface
 {
-    public function __invoke(): Response
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return new HtmlResponse('I am describer.');
     }
