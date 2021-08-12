@@ -7,6 +7,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Pipeline
 {
+    /**
+    * @var \SplQueue<mixed> $queue
+     */
     private $queue;
 
     public function __construct()
