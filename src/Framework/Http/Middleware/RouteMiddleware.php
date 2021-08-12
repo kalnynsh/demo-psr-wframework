@@ -4,38 +4,45 @@ namespace Framework\Http\Middleware;
 
 use Framework\Http\Router\Result;
 use Framework\Http\Router\Router;
-use Psr\Http\Message\ServerRequestInterface;
-use Framework\Http\Router\Exception\RequestNotMatchedException;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Framework\Http\Router\Exception\RequestNotMatchedException;
 
-class RouteMiddleware
+class RouteMiddleware implements MiddlewareInterface
 {
-    private $router;
+    private Router $router;
 
     public function __construct(Router $router)
     {
         $this->router = $router;
     }
 
-    public function __invoke(
+    public function process(
         ServerRequestInterface $request,
-        ResponseInterface $response, 
-        callable $next
-    ) {
+        RequestHandlerInterface $handler
+    ): ResponseInterface {
         try {
+            /**
+             * @var Result $result
+             */
             $result = $this->router->match($request);
 
+            /**
+             * @var string $attributeName
+             * @var string $attributeValue
+             */
             foreach ($result->getAttributes() as $attributeName => $attributeValue) {
                 $request->withAttribute($attributeName, $attributeValue);
             }
 
-            return $next(
-                $request->withAttribute(Result::class, $result), 
-                $response
+            return $handler->handle(
+                $request->withAttribute(Result::class, $result)
             );
             
-        } catch (RequestNotMatchedException $e) {
-            return $next($request, $response);
+        } catch (RequestNotMatchedException $exception) {
+            return $handler->handle($request);
         }
     }
 }

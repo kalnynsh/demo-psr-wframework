@@ -2,10 +2,13 @@
 
 namespace App\Http\Middleware;
 
+use Laminas\Diactoros\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class BasicAuthMiddleware
+class BasicAuthMiddleware implements MiddlewareInterface
 {
     public const ATTRIBUTE = '_user';
     private $users;
@@ -15,25 +18,41 @@ class BasicAuthMiddleware
         $this->users = $users;
     }
 
-    public function __invoke(
+    public function process(
         ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next
-    ) {
+        RequestHandlerInterface $handler
+    ): ResponseInterface 
+    {
+        /** @var string|null $username */
         $username = $request->getServerParams()['PHP_AUTH_USER'] ?? null;
+
+        /** @var string|null $password */
         $password = $request->getServerParams()['PHP_AUTH_PW'] ?? null;
+       
 
         if (! empty($username) && ! empty($password)) {
 
+            /** 
+             * @var string $existsUsername 
+             * @var string $existsPassword 
+             * 
+            */
             foreach ($this->users as $existsUsername => $existsPassword) {
 
                 if ($username === $existsUsername && $password === $existsPassword) {
-                    return $next($request->withAttribute(self::ATTRIBUTE, $username));
+
+                    $requestWithAttr = $request->withAttribute(self::ATTRIBUTE, $username);
+                    $response = $handler->handle($requestWithAttr);
+
+                    return $response;
                 }
 
             }
 
         }
+
+        // $response = $handler->handle($request);
+        $response = new Response();
 
         return $response
             ->withStatus(401)

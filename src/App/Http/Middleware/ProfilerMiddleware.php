@@ -2,25 +2,27 @@
 
 namespace App\Http\Middleware;
 
-use Laminas\Diactoros\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class ProfilerMiddleware
+class ProfilerMiddleware implements MiddlewareInterface
 {
-    public function __invoke(
+    public function process(
         ServerRequestInterface $request,
-        ResponseInterface $response, 
-        callable $next
-    ): Response
+        RequestHandlerInterface $handler
+    ): ResponseInterface
     {
         $start = microtime(true);
-
-        /** @var ResponseInterface $response */
-        $response = $next($request, $response);
-
         $stop = microtime(true);
+        
+        /** @var string $interval */
+        $interval = strval($stop - $start);
 
-        return $response->withHeader('X-Profiler-Duration', $stop - $start);
+        $response = $handler->handle($request);
+        $response->withHeader('X-Profilers-Duration', $interval);
+
+        return $response;
     }
 }

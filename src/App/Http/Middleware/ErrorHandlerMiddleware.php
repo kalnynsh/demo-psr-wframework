@@ -6,25 +6,26 @@ use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class ErrorHandlerMiddleware
+class ErrorHandlerMiddleware implements MiddlewareInterface
 {
-    private $isDebugMode;
+    private bool $isDebugMode;
 
-    public function __construct($isDebugMode = false)
+    public function __construct(bool $isDebugMode = false)
     {
         $this->isDebugMode = $isDebugMode;
     }
 
-    public function __invoke(
+    public function process(
         ServerRequestInterface $request,
-        ResponseInterface $response, 
-        callable $next
+        RequestHandlerInterface $handler
     ): ResponseInterface
     {
         try {
 
-            return $next($request, $response);
+            return $handler->handle($request);
             
         } catch (\Throwable $exception) {
 
