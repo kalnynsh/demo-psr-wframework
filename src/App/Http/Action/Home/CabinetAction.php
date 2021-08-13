@@ -2,13 +2,13 @@
 
 namespace App\Http\Action\Home;
 
-use Laminas\Diactoros\Response;
 use Psr\Http\Message\ResponseInterface;
 use App\Http\Middleware\BasicAuthMiddleware;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class CabinetAction
+class CabinetAction implements RequestHandlerInterface
 {
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
