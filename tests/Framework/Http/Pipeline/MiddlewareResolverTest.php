@@ -15,6 +15,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class MiddlewareResolverTest extends TestCase
 {
+    public $backupStaticAttributes = false;
+    public $runTestInSeparateProcess = true;
+
     /**
      * @dataProvider getValidHandlers
      * 

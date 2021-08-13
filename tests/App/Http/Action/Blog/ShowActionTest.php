@@ -3,20 +3,22 @@
 namespace Test\App\Http\Action\Blog;
 
 use App\Http\Action\Blog\ShowAction;
-use App\Http\Middleware\NotFoundHandler;
 use Laminas\Diactoros\ServerRequest;
 use PHPUnit\Framework\TestCase;
 
 class ShowActionTest extends TestCase
 {
-    public function testSuccess()
+    public $backupStaticAttributes = false;
+    public $runTestInSeparateProcess = true;
+
+    public function testSuccess():void
     {
         $action = new ShowAction();
 
         $request = (new ServerRequest())
             ->withAttribute('id', $id = 2);
 
-        $response = $action($request, new NotFoundHandler());
+        $response = $action->handle($request);
 
         self::assertEquals(200, $response->getStatusCode());
         self::assertJsonStringEqualsJsonString(
@@ -35,9 +37,15 @@ class ShowActionTest extends TestCase
         $request = (new ServerRequest())
             ->withAttribute('id', $id = 100);
 
-        $response = $action($request, new  NotFoundHandler());
+        $response = $action->handle($request);
 
         self::assertEquals(404, $response->getStatusCode());
-        self::assertEquals('Not found', $response->getBody()->getContents());
+        self::assertEquals(
+            json_encode([
+                'id' => 0, 
+                'title' => 'The Post #' . $id . ' not exists.'
+            ]), 
+            $response->getBody()->getContents()
+        );
     }
 }

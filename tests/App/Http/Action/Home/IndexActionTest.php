@@ -8,16 +8,23 @@ use Laminas\Diactoros\ServerRequest;
 
 class IndexActionTest extends TestCase
 {
+    public $backupStaticAttributes = false;
+    public $runTestInSeparateProcess = true;
+
     public function testGuest(): void
     {
         $request = new ServerRequest();
 
         $action = new IndexAction();
         
-        $response = $action($request);
+        $response = $action->handle($request);
 
         self::assertEquals(200, $response->getStatusCode());
-        self::assertEquals('Hello Guest!', $response->getBody()->getContents());
+
+        self::assertEquals(
+            '<p>Welcome Guest!</p>', 
+            $response->getBody()->getContents()
+        );
     }
 
     public function testJohn(): void
@@ -27,8 +34,11 @@ class IndexActionTest extends TestCase
 
         $action = new IndexAction();
 
-        $response = $action($request);
+        $response = $action->handle($request);
 
-        self::assertEquals('Hello John Noland!', $response->getBody()->getContents());
+        self::assertEquals(
+            '<p>Welcome John Noland!</p>', 
+            $response->getBody()->getContents()
+        );
     }
 }

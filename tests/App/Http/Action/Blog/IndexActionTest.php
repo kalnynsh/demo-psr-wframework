@@ -2,16 +2,21 @@
 
 namespace Test\App\Http\Action\Blog;
 
-use App\Http\Action\Blog\IndexAction;
 use PHPUnit\Framework\TestCase;
+use Laminas\Diactoros\ServerRequest;
+use App\Http\Action\Blog\IndexAction;
 
 class IndexActionTest extends TestCase
 {
-    public function testSuccess()
+    public $backupStaticAttributes = false;
+    public $runTestInSeparateProcess = true;
+
+    public function testSuccess(): void
     {
         $action = new IndexAction();
+        $request = new ServerRequest();
 
-        $response = $action();
+        $response = $action->handle($request);
 
         self::assertEquals(200, $response->getStatusCode());
         self::assertJsonStringEqualsJsonString(
