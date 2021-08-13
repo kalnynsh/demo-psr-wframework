@@ -14,16 +14,13 @@ class MiddlewareResolver
      * @template T of MiddlewareInterface
      * @template TValue string|T
      * 
-     * @param string|array<positive-int, TValue>|T $handler
+     * @param string|T $handler
      * @throws UnknownMiddlewareTypeException
      * 
      * @return T
      */
     public function resolve($handler): MiddlewareInterface
     {
-        if (\is_array($handler)) {
-            return $this->createPipe($handler);
-        }
 
         /** @var class-string<MiddlewareInterface> $handler */
         if (\is_string($handler)) {
@@ -45,18 +42,5 @@ class MiddlewareResolver
         }
 
         throw new UnknownMiddlewareTypeException(\gettype($handler));
-    }
-
-
-    private function createPipe(array $middlewares): MiddlewarePipe
-    {
-        $pipeline = new MiddlewarePipe();
-
-        /** @var class-string<MiddlewareInterface>|MiddlewareInterface $middleware */
-        foreach ($middlewares as $middleware) {
-            $pipeline->pipe($this->resolve($middleware));
-        }
-
-        return $pipeline;
     }
 }
