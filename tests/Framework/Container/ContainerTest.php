@@ -2,8 +2,8 @@
 
 namespace Test\Framework\Container;
 
-use Framework\Container;
-use Framework\Container\Exeption\ServiceNotFoundException;
+use Framework\Container\Container;
+use Framework\Container\Exception\ServiceNotFoundException;
 use PHPUnit\Framework\TestCase;
 
 class ContainerTest extends TestCase
@@ -28,7 +28,7 @@ class ContainerTest extends TestCase
         self::assertEquals($value, $container->get($name));
     }
 
-    public function testNotFound()
+    public function testNotFound():void
     {
         $container = new Container();
 
