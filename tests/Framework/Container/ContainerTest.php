@@ -53,7 +53,28 @@ class ContainerTest extends TestCase
         self::assertSame($value1, $value2);
     }
 
-    public function testNotFound():void
+    public function testPassingParameterFromContainer(): void
+    {
+        $container = $this->getContainer();
+
+        $containerParam = 'Number_parameter';
+        $containerValue = 96;
+
+        $container->set($containerParam, $containerValue);
+
+        $container->set($serviceName = 'Std_service', function (Container $container) {
+            $object = new \stdClass();
+            $object->param = $container->get('Number_parameter');
+
+            return $object;
+        });
+
+        /** @var \stdClass $object */
+        self::assertObjectHasAttribute('param', $object = $container->get($serviceName));
+        self::assertEquals($containerValue, $object->param);
+    }
+
+    public function testNotFound(): void
     {
         $container = $this->getContainer();
 
