@@ -7,20 +7,27 @@ use Framework\Container\Exception\ServiceNotFoundException;
 class Container
 {
     private array $definitions = [];
+    private array $results = [];
 
     public function get($id)
     {
-        if (! array_key_exists($id, $this->definitions)) {
+        if (\array_key_exists($id, $this->results)) {
+            return $this->results[$id];
+        }
+
+        if (! \array_key_exists($id, $this->definitions)) {
             throw new ServiceNotFoundException('Unknown service "' . $id . '"');
         }
 
         $definition =  $this->definitions[$id];
 
         if ($definition instanceof \Closure) {
-            return $definition();
+            $this->results[$id] = $definition();
+        } else {
+            $this->results[$id] = $definition;
         }
 
-        return $definition;
+        return $this->results[$id];
     }
 
     public function set($id, $value): void

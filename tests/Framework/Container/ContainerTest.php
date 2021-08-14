@@ -13,7 +13,7 @@ class ContainerTest extends TestCase
 
     public function testPrimitives(): void
     {
-        $container = new Container();
+        $container = $this->getContainer();
 
         $container->set($name = 'Number_service', $value = 5);
         self::assertEquals($value, $container->get($name));
@@ -30,7 +30,7 @@ class ContainerTest extends TestCase
 
     public function testCallback(): void
     {
-        $container = new Container();
+        $container = $this->getContainer();
 
         $container->set($name = 'Std_service', function () {
             return new \stdClass();
@@ -40,12 +40,30 @@ class ContainerTest extends TestCase
         self::assertInstanceOf(\stdClass::class, $value);
     }
 
+    public function testSingleton(): void
+    {
+        $container = $this->getContainer();
+
+        $container->set($name = 'Std_service', function() {
+            return new \stdClass();
+        });
+
+        self::assertNotNull($value1 = $container->get($name));
+        self::assertNotNull($value2 = $container->get($name));
+        self::assertSame($value1, $value2);
+    }
+
     public function testNotFound():void
     {
-        $container = new Container();
+        $container = $this->getContainer();
 
         $this->expectException(ServiceNotFoundException::class);
 
         $container->get('Email_service');
+    }
+
+    private function getContainer(): Container
+    {
+        return new Container();
     }
 }
