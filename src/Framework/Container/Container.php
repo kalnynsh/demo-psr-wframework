@@ -14,7 +14,13 @@ class Container
             throw new ServiceNotFoundException('Unknown service "' . $id . '"');
         }
 
-        return $this->definitions[$id];
+        $definition =  $this->definitions[$id];
+
+        if ($definition instanceof \Closure) {
+            return $definition();
+        }
+
+        return $definition;
     }
 
     public function set($id, $value): void
