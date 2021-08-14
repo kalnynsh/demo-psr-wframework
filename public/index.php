@@ -5,7 +5,7 @@ use App\Http\Middleware;
 use Framework\Http\Application;
 use Laminas\Diactoros\Response;
 use Aura\Router\RouterContainer;
-use function Laminas\Stratigility\path;
+
 use Laminas\Diactoros\ServerRequestFactory;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Pipeline\MiddlewareResolver;
@@ -13,22 +13,28 @@ use Laminas\Stratigility\Middleware\ErrorHandler;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\NotFoundHandler;
 use Laminas\Stratigility\Middleware\ErrorResponseGenerator;
+use Framework\Container\Container;
+
+use function Laminas\Stratigility\path;
 
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 
 session_start();
 
-### Initialization
-$usersParams = [
-    'users' => [
-        'admin' => 'adminPassword',
-    ]
-];
 
-$params = [
-    'debug' => true,
-];
+
+### Initialization
+$serviceLocator = new Container();
+$serviceLocator->set(
+    'config',
+    [
+        'debug' => true,
+        'users' => [
+            'admin' => 'supassword',
+        ],
+    ]
+);
 
 $auraRouterContainer = new RouterContainer();
 $routes = $auraRouterContainer->getMap();
@@ -56,17 +62,20 @@ $resolver = new MiddlewareResolver();
 $app = new Application($resolver);
 
 // Laminas ErrorHandler
+/** @var bool $isDebug */
+$isDebugMode = $serviceLocator->get('config')['debug'];
+
 $app->pipe(
     new ErrorHandler(
         function () {
             return new Response();
         }, 
-        new ErrorResponseGenerator($params['debug'])
+        new ErrorResponseGenerator($isDebugMode)
     )
 );
 
 // Own ErrorHandlerMiddleware
-// $app->pipe(new Middleware\ErrorHandlerMiddleware($params['debug']));
+// $app->pipe(new Middleware\ErrorHandlerMiddleware($isDebugMode));
 
 /* Global ProfileMiddleware */
 $app->pipe(Middleware\ProfilerMiddleware::class);
@@ -74,9 +83,12 @@ $app->pipe(Middleware\CredentialsMiddleware::class);
 
 $app->pipe(new Framework\Http\Middleware\RouteMiddleware($router));
 
+/** @var array $users */
+$users = $serviceLocator->get('config')['users'];
+
 $app->pipe(path(
     '/cabinet', 
-    new Middleware\BasicAuthMiddleware($usersParams['users'])
+    new Middleware\BasicAuthMiddleware($users)
 ));
 
 $app->pipe(new Framework\Http\Middleware\DispatcherMiddleware());
