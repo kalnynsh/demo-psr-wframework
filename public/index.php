@@ -22,9 +22,7 @@ require 'vendor/autoload.php';
 
 session_start();
 
-
-
-### Initialization
+## Configuration
 $serviceLocator = new Container();
 $serviceLocator->set(
     'config',
@@ -36,6 +34,29 @@ $serviceLocator->set(
     ]
 );
 
+$serviceLocator->set(
+    Middleware\BasicAuthMiddleware::class,
+    function  (Container $serviceLocator) {
+        return new Middleware\BasicAuthMiddleware(
+            $serviceLocator->get('config')['users']
+        );
+    }
+);
+
+// Laminas ErrorHandler
+$serviceLocator->set(
+    ErrorHandler::class,
+    function  (Container $serviceLocator) {
+        return new ErrorHandler(
+            function () {
+        return new Response();
+            }, 
+            new ErrorResponseGenerator($serviceLocator->get('config')['debug'])
+        );
+    }
+);
+
+## Initialization
 $auraRouterContainer = new RouterContainer();
 $routes = $auraRouterContainer->getMap();
 
@@ -62,16 +83,8 @@ $resolver = new MiddlewareResolver();
 $app = new Application($resolver);
 
 // Laminas ErrorHandler
-/** @var bool $isDebug */
-$isDebugMode = $serviceLocator->get('config')['debug'];
-
 $app->pipe(
-    new ErrorHandler(
-        function () {
-            return new Response();
-        }, 
-        new ErrorResponseGenerator($isDebugMode)
-    )
+    $serviceLocator->get(ErrorHandler::class)
 );
 
 // Own ErrorHandlerMiddleware
@@ -83,12 +96,9 @@ $app->pipe(Middleware\CredentialsMiddleware::class);
 
 $app->pipe(new Framework\Http\Middleware\RouteMiddleware($router));
 
-/** @var array $users */
-$users = $serviceLocator->get('config')['users'];
-
 $app->pipe(path(
     '/cabinet', 
-    new Middleware\BasicAuthMiddleware($users)
+    $serviceLocator->get(Middleware\BasicAuthMiddleware::class)
 ));
 
 $app->pipe(new Framework\Http\Middleware\DispatcherMiddleware());
