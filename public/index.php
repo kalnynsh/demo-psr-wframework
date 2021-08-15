@@ -6,17 +6,18 @@ use Framework\Http\Application;
 use Laminas\Diactoros\Response;
 use Aura\Router\RouterContainer;
 
+use Framework\Container\Container;
+use function Laminas\Stratigility\path;
+use Framework\Http\Router\RouterInterface;
 use Laminas\Diactoros\ServerRequestFactory;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Pipeline\MiddlewareResolver;
+
 use Laminas\Stratigility\Middleware\ErrorHandler;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
+
 use Laminas\Stratigility\Middleware\NotFoundHandler;
-
 use Laminas\Stratigility\Middleware\ErrorResponseGenerator;
-use Framework\Container\Container;
-
-use function Laminas\Stratigility\path;
 
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
@@ -105,7 +106,7 @@ $serviceLocator->set(
 );
 
 $serviceLocator->set(
-    AuraRouterAdapter::class,
+    RouterInterface::class,
     function (Container $serviceLocator) {
         return new AuraRouterAdapter(
             $serviceLocator->get(RouterContainer::class)
@@ -118,39 +119,37 @@ $serviceLocator->set(
 
     function (Container $serviceLocator) {
         return new Application(
-            $serviceLocator->get(MiddlewareResolver::class)
+            $serviceLocator->get(MiddlewareResolver::class),
+            $serviceLocator->get(RouterInterface::class)
         );
     }
 );
 
 ## Initialization
-/** @var RouterContainer $auraRouterContainer */
-$auraRouterContainer = $serviceLocator->get(RouterContainer::class);
-$routes = $auraRouterContainer->getMap();
 
-$routes->get('home', '/', Action\Home\IndexAction::class);
+/** @var Application $app */
+$app = $serviceLocator->get(Application::class);
 
-$routes->get('about', '/about', Action\Home\AboutAction::class);
+$app->addGetRoute('home', '/', Action\Home\IndexAction::class);
 
-$routes->get(
+$app->addGetRoute('about', '/about', Action\Home\AboutAction::class);
+
+$app->addGetRoute(
     'cabinet', 
     '/cabinet',      
     Action\Home\CabinetAction::class 
 );
 
-$routes->get('blog', '/blog', Action\Blog\IndexAction::class);
+$app->addGetRoute('blog', '/blog', Action\Blog\IndexAction::class);
 
-$routes->get(
+$app->addGetRoute(
     'blog_show',
     '/blog/{id}',
-    Action\Blog\ShowAction::class    
-)->tokens(['id' => '\\d+']);
-
-/** @var  AuraRouterAdapter $router */
-$router = $serviceLocator->get(AuraRouterAdapter::class);
-
-/** @var Application $app */
-$app = $serviceLocator->get(Application::class);
+    Action\Blog\ShowAction::class,
+    [
+        'tokens' => ['id' => '\\d+',],
+    ]   
+);
 
 // Laminas ErrorHandler
 $app->pipe(
@@ -170,7 +169,11 @@ $app->pipe(
     $serviceLocator->get(Middleware\CredentialsMiddleware::class)
 );
 
-$app->pipe(new Framework\Http\Middleware\RouteMiddleware($router));
+$app->pipe(
+    new Framework\Http\Middleware\RouteMiddleware(
+    $app->getRouter()
+    )
+);
 
 $app->pipe(path(
     '/cabinet', 

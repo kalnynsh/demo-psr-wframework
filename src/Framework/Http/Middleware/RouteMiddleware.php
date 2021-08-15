@@ -3,7 +3,7 @@
 namespace Framework\Http\Middleware;
 
 use Framework\Http\Router\Result;
-use Framework\Http\Router\Router;
+use Framework\Http\Router\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,9 +12,9 @@ use Framework\Http\Router\Exception\RequestNotMatchedException;
 
 class RouteMiddleware implements MiddlewareInterface
 {
-    private Router $router;
+    private RouterInterface $router;
 
-    public function __construct(Router $router)
+    public function __construct(RouterInterface $router)
     {
         $this->router = $router;
     }

@@ -2,15 +2,16 @@
 
 namespace Framework\Http\Router;
 
+use Aura\Router\Route;
 use Aura\Router\RouterContainer;
 use Framework\Http\Router\Result;
 use Aura\Router\Exception\RouteNotFound;
+use Framework\Http\Router\RouterInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Framework\Http\Router\Exception\RequestNotMatchedException;
 use Framework\Http\Router\Exception\RouteNotFoundException;
-use Aura\Router\Route;
+use Framework\Http\Router\Exception\RequestNotMatchedException;
 
-class AuraRouterAdapter implements Router
+class AuraRouterAdapter implements RouterInterface
 {
     private RouterContainer $aura;
 
@@ -32,7 +33,8 @@ class AuraRouterAdapter implements Router
 
         /** @var Route $route */
         if ($route = $matcher->match($request)) {
-            return new Result(
+
+            return $this->getResult(
                 $route->name, 
                 $route->handler, 
                 $route->attributes
@@ -60,5 +62,54 @@ class AuraRouterAdapter implements Router
         } catch (RouteNotFound $exc) {
             throw new RouteNotFoundException($routeName, $params, $exc);
         }
+    }
+
+    public function addRoute(RouteDto $routeDto): void
+    {
+        $route = $this->getRoute();
+
+        $route->name($routeDto->getName());
+        $route->path($routeDto->getPath());
+        $route->handler($routeDto->getHandler());
+
+        foreach ($routeDto->getOptions() as $name => $value) {
+
+            if ($name === 'tokens') {
+
+                $route->tokens($value);
+
+            } elseif ($name === 'defaults') {
+
+                $route->defaults($value);
+
+            } elseif ($name === 'wildcard') {
+
+                $route->wildcard($value);
+                break;
+
+            } else {
+                throw new \InvalidArgumentException('Undefined option "' . $name . '"');
+            }           
+        }
+
+        if ($methods = $routeDto->getMethods()) {
+            $route->allows($methods);
+        }
+
+        $this->aura->getMap()->addRoute($route);
+    }
+
+    private function getRoute(): Route
+    {
+        return new Route();
+    }
+
+    private function getResult(
+        string $name, 
+        mixed $handler, 
+        array $attributes
+    ): Result
+    {
+        return new Result($name, $handler, $attributes);
     }
 }

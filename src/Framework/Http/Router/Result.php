@@ -8,8 +8,8 @@ class Result
 {
     private string $name;
 
-    /** @var class-string<RequestHandlerInterface> */
-    private string $handler;
+    /** @var class-string<RequestHandlerInterface>|mixed */
+    private mixed $handler;
     private array $attributes;
 
     public function __construct(
@@ -19,7 +19,7 @@ class Result
     ) {
         $this->name = $name;
 
-        /** @var class-string<RequestHandlerInterface> $handler */
+        /** @var class-string<RequestHandlerInterface>|mixed $handler */
         $this->handler = $handler;
         $this->attributes = $attributes;
     }
@@ -37,9 +37,9 @@ class Result
     /**
      * Get the value of handler
      * 
-     * @return class-string<RequestHandlerInterface>
+     * @return class-string<RequestHandlerInterface>|mixed
      */ 
-    public function getHandler(): string
+    public function getHandler(): mixed
     {
         return $this->handler;
     }
@@ -47,7 +47,7 @@ class Result
     /**
      * Get the value of attributes
      * 
-     * @return array<non-empty-string, mixed>
+     * @return array<array-key, mixed>
      */ 
     public function getAttributes(): array
     {

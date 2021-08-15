@@ -7,7 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Framework\Http\Router\Exception\RouteNotFoundException;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 
-interface Router
+interface RouterInterface
 {
     /**
      * @param ServerRequestInterface $request
@@ -23,4 +23,6 @@ interface Router
      * @return string|false
      */
     public function generate(string $routeName, array $params = []): string|false;
+
+    public function addRoute(RouteDto $routeDto): void;
 }
