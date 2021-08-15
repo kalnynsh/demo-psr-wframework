@@ -8,6 +8,7 @@ use Aura\Router\Exception\RouteNotFound;
 use Psr\Http\Message\ServerRequestInterface;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 use Framework\Http\Router\Exception\RouteNotFoundException;
+use Aura\Router\Route;
 
 class AuraRouterAdapter implements Router
 {
@@ -29,8 +30,13 @@ class AuraRouterAdapter implements Router
     {
         $matcher = $this->aura->getMatcher();
 
+        /** @var Route $route */
         if ($route = $matcher->match($request)) {
-            return new Result($route->name, $route->handler, $route->attributes);
+            return new Result(
+                $route->name, 
+                $route->handler, 
+                $route->attributes
+            );
         }
 
         throw new RequestNotMatchedException($request);
