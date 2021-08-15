@@ -18,11 +18,11 @@ class ProfilerMiddleware implements MiddlewareInterface
         $stop = microtime(true);
         
         /** @var string $interval */
-        $interval = strval($stop - $start);
+        $interval = \strval($stop - $start);
 
         $response = $handler->handle($request);
-        $response->withHeader('X-Profilers-Duration', $interval);
 
-        return $response;
+        return $response
+                    ->withHeader('X-Profiler-Duration', $interval);
     }
 }
