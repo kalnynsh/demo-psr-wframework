@@ -2,7 +2,6 @@
 
 namespace Framework\Http\Pipeline;
 
-use Laminas\Stratigility\MiddlewarePipe;
 use Psr\Http\Server\MiddlewareInterface;
 use Framework\Http\Middleware\Exception\UnknownMiddlewareTypeException;
 

@@ -90,8 +90,42 @@ $serviceLocator->set(
     }
 );
 
+$serviceLocator->set(
+    MiddlewareResolver::class,
+    function (Container $serviceLocator) {
+        return new MiddlewareResolver();
+    }
+);
+
+$serviceLocator->set(
+    RouterContainer::class,
+    function (Container $serviceLocator) {
+        return new RouterContainer();
+    }
+);
+
+$serviceLocator->set(
+    AuraRouterAdapter::class,
+    function (Container $serviceLocator) {
+        return new AuraRouterAdapter(
+            $serviceLocator->get(RouterContainer::class)
+        );
+    }
+);
+
+$serviceLocator->set(
+    Application::class,
+
+    function (Container $serviceLocator) {
+        return new Application(
+            $serviceLocator->get(MiddlewareResolver::class)
+        );
+    }
+);
+
 ## Initialization
-$auraRouterContainer = new RouterContainer();
+/** @var RouterContainer $auraRouterContainer */
+$auraRouterContainer = $serviceLocator->get(RouterContainer::class);
 $routes = $auraRouterContainer->getMap();
 
 $routes->get('home', '/', Action\Home\IndexAction::class);
@@ -112,9 +146,11 @@ $routes->get(
     Action\Blog\ShowAction::class    
 )->tokens(['id' => '\\d+']);
 
-$router = new AuraRouterAdapter($auraRouterContainer);
-$resolver = new MiddlewareResolver();
-$app = new Application($resolver);
+/** @var  AuraRouterAdapter $router */
+$router = $serviceLocator->get(AuraRouterAdapter::class);
+
+/** @var Application $app */
+$app = $serviceLocator->get(Application::class);
 
 // Laminas ErrorHandler
 $app->pipe(
