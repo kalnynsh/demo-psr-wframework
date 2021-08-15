@@ -12,6 +12,7 @@ use Framework\Http\Pipeline\MiddlewareResolver;
 use Laminas\Stratigility\Middleware\ErrorHandler;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\NotFoundHandler;
+
 use Laminas\Stratigility\Middleware\ErrorResponseGenerator;
 use Framework\Container\Container;
 
@@ -24,6 +25,7 @@ session_start();
 
 ## Configuration
 $serviceLocator = new Container();
+
 $serviceLocator->set(
     'config',
     [
@@ -51,8 +53,40 @@ $serviceLocator->set(
             function () {
         return new Response();
             }, 
-            new ErrorResponseGenerator($serviceLocator->get('config')['debug'])
+            new ErrorResponseGenerator(
+                $serviceLocator->get('config')['debug']
+            )
         );
+    }
+);
+
+$serviceLocator->set(
+    Middleware\ProfilerMiddleware::class,
+    function (Container $serviceLocator) {
+        return new Middleware\ProfilerMiddleware();
+    }
+);
+
+$serviceLocator->set(
+    Middleware\CredentialsMiddleware::class,
+    function (Container $serviceLocator) {
+        return new Middleware\CredentialsMiddleware();
+    }
+);
+
+$serviceLocator->set(
+    Framework\Http\Middleware\DispatcherMiddleware::class,
+    function (Container $serviceLocator) {
+        return new Framework\Http\Middleware\DispatcherMiddleware();
+    }
+);
+
+$serviceLocator->set(
+    NotFoundHandler::class,
+    function (Container $serviceLocator) {
+        return new NotFoundHandler(function () {
+            return new Response();
+        });
     }
 );
 
@@ -87,12 +121,18 @@ $app->pipe(
     $serviceLocator->get(ErrorHandler::class)
 );
 
+// Global ProfileMiddleware 
+
 // Own ErrorHandlerMiddleware
 // $app->pipe(new Middleware\ErrorHandlerMiddleware($isDebugMode));
 
-/* Global ProfileMiddleware */
-$app->pipe(Middleware\ProfilerMiddleware::class);
-$app->pipe(Middleware\CredentialsMiddleware::class);
+$app->pipe(
+    $serviceLocator->get(Middleware\ProfilerMiddleware::class)
+);
+
+$app->pipe(
+    $serviceLocator->get(Middleware\CredentialsMiddleware::class)
+);
 
 $app->pipe(new Framework\Http\Middleware\RouteMiddleware($router));
 
@@ -101,11 +141,13 @@ $app->pipe(path(
     $serviceLocator->get(Middleware\BasicAuthMiddleware::class)
 ));
 
-$app->pipe(new Framework\Http\Middleware\DispatcherMiddleware());
+$app->pipe(
+    $serviceLocator->get(Framework\Http\Middleware\DispatcherMiddleware::class)
+);
 
-$app->pipe(new NotFoundHandler(function () {
-    return new Response();
-}));
+$app->pipe(
+    $serviceLocator->get(NotFoundHandler::class)
+);
 
 # Running
 $request = ServerRequestFactory::fromGlobals();
