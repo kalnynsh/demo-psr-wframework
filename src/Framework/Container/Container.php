@@ -9,6 +9,7 @@ class Container
     private array $definitions = [];
     private array $results = [];
 
+    /** @param class-string|string $id */
     public function get($id)
     {
         if (\array_key_exists($id, $this->results)) {
@@ -16,6 +17,11 @@ class Container
         }
 
         if (! \array_key_exists($id, $this->definitions)) {
+
+            if (class_exists($id)) {
+                return $this->results[$id] = new $id();
+            }
+
             throw new ServiceNotFoundException('Unknown service "' . $id . '"');
         }
 
@@ -30,9 +36,11 @@ class Container
         return $this->results[$id];
     }
 
+    /** @param class-string|string $id */
     public function has($id): bool
     {
-        return array_key_exists($id, $this->definitions);
+        return array_key_exists($id, $this->definitions)
+            || class_exists($id);
     }
 
     public function set($id, $value): void

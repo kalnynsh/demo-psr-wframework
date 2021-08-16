@@ -53,7 +53,7 @@ class ContainerTest extends TestCase
         self::assertSame($value1, $value2);
     }
 
-    public function testPassingParameterFromContainer(): void
+    public function testGettingParameterFromContainer(): void
     {
         $container = $this->getContainer();
 
@@ -81,6 +81,19 @@ class ContainerTest extends TestCase
         $this->expectException(ServiceNotFoundException::class);
 
         $container->get('Email_service');
+    }
+
+    public function testAutoInstantiating(): void
+    {
+        $serviceLocator = $this->getContainer();
+
+        self::assertNotNull($value1 = $serviceLocator->get(\stdClass::class));
+        self::assertNotNull($value2 = $serviceLocator->get(\stdClass::class));
+
+        self::assertInstanceOf(\stdClass::class, $value1);
+        self::assertInstanceOf(\stdClass::class, $value2);
+
+        self::assertSame($value1, $value2);
     }
 
     private function getContainer(): Container
