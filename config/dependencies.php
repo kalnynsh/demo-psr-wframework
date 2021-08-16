@@ -19,7 +19,7 @@ use Laminas\Stratigility\Middleware\ErrorResponseGenerator;
 $serviceLocator->set(
     MiddlewareResolver::class,
     function (Container $serviceLocator) {
-        return new MiddlewareResolver();
+        return new MiddlewareResolver($serviceLocator);
     }
 );
 

@@ -2,9 +2,10 @@
 
 namespace Test\App\Http\Action\Blog;
 
+use PHPUnit\Framework\TestCase;
+use Framework\Http\Router\Result;
 use App\Http\Action\Blog\ShowAction;
 use Laminas\Diactoros\ServerRequest;
-use PHPUnit\Framework\TestCase;
 
 class ShowActionTest extends TestCase
 {
@@ -14,9 +15,16 @@ class ShowActionTest extends TestCase
     public function testSuccess():void
     {
         $action = new ShowAction();
+        $id = 2;
+
+        $result = new Result(
+            'blog_show', 
+            ShowAction::class,
+            ['id' => $id]
+        );
 
         $request = (new ServerRequest())
-            ->withAttribute('id', $id = 2);
+            ->withAttribute(Result::class, $result);
 
         $response = $action->handle($request);
 
@@ -33,13 +41,21 @@ class ShowActionTest extends TestCase
     public function testNotFound(): void
     {
         $action = new ShowAction();
+        $id = 100;
+
+        $result = new Result(
+            'blog_show', 
+            ShowAction::class,
+            ['id' => $id]
+        );
 
         $request = (new ServerRequest())
-            ->withAttribute('id', $id = 100);
+            ->withAttribute(Result::class, $result);
 
         $response = $action->handle($request);
 
         self::assertEquals(404, $response->getStatusCode());
+
         self::assertEquals(
             json_encode([
                 'id' => 0, 
