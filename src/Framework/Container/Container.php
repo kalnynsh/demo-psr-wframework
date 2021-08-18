@@ -6,8 +6,13 @@ use Framework\Container\Exception\ServiceNotFoundException;
 
 class Container
 {
-    private array $definitions = [];
+    private array $definitions;
     private array $results = [];
+
+    public function __construct(array $definitions = [])
+    {
+        $this->definitions = $definitions;
+    }
 
     /** @param class-string|string $id */
     public function get($id)
@@ -18,8 +23,11 @@ class Container
 
         if (! \array_key_exists($id, $this->definitions)) {
 
-            if (class_exists($id)) {
-                return $this->results[$id] = new $id();
+            if (\class_exists($id)) {
+
+                $this->addObjectWithArgs($id);
+
+                return $this->results[$id];
             }
 
             throw new ServiceNotFoundException('Unknown service "' . $id . '"');
@@ -46,5 +54,58 @@ class Container
     public function set($id, $value): void
     {
         $this->definitions[$id] = $value;
+    }
+
+    private function addObjectWithArgs($id): void
+    {
+        $reflection = new \ReflectionClass($id);
+        $arguments = [];
+
+        /** @var \ReflectionMethod|null $constructor */
+        if (($constructor = $reflection->getConstructor()) !== null) {
+
+            /** @var \ReflectionParameter[] $constructor->getParameters() */
+            /** @var \ReflectionParameter $parameter */
+            foreach ($constructor->getParameters() as $parameter) {
+                /** @var \ReflectionNamedType|null $parameterType */
+                $parameterType = $parameter->getType();
+                
+                if (! $parameterType ) {
+                    continue;
+                }
+
+                $parameterTypeName = $parameterType->getName();
+
+                if ($this->isInstatiatable($parameterTypeName)) {
+                    /** @var class-string $className */
+                    $className = $parameterTypeName;
+                    $arguments[] = $this->get($className);
+
+                } elseif (mb_strtolower($parameterTypeName) === 'array') {
+
+                    $arguments[] = [];
+
+                } elseif (! $parameter->isDefaultValueAvailable()) {
+                    throw new ServiceNotFoundException(
+                        'Unable resolve parameter "' 
+                        . $parameter->getType()->getName()
+                        . '" of ' 
+                        . $id
+                        . ' service.' 
+                    );
+                } else { 
+                    $arguments[] = $parameter->getDefaultValue();
+                }                            
+            }  
+        }
+
+        $this->results[$id] = $reflection->newInstanceArgs($arguments);
+    }
+
+    /** @param string $typeName */
+    private function isInstatiatable($typeName): bool
+    {
+        return mb_strtolower($typeName) != 'closure' 
+                && !is_callable($typeName) ;
     }
 }

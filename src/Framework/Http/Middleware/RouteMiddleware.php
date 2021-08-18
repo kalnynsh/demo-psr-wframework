@@ -34,7 +34,7 @@ class RouteMiddleware implements MiddlewareInterface
              * @var string $attributeValue
              */
             foreach ($result->getAttributes() as $attributeName => $attributeValue) {
-                $request->withAttribute($attributeName, $attributeValue);
+                $request = $request->withAttribute($attributeName, $attributeValue);
             }
 
             return $handler->handle(
