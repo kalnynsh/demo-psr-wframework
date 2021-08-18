@@ -2,9 +2,10 @@
 
 namespace Framework\Container;
 
+use Psr\Container\ContainerInterface;
 use Framework\Container\Exception\ServiceNotFoundException;
 
-class Container
+class Container implements ContainerInterface
 {
     private array $definitions;
     private array $results = [];
@@ -14,8 +15,12 @@ class Container
         $this->definitions = $definitions;
     }
 
-    /** @param class-string|string $id */
-    public function get($id)
+    /** @param class-string|string $id 
+     * 
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+    */
+    public function get(string $id)
     {
         if (\array_key_exists($id, $this->results)) {
             return $this->results[$id];
@@ -44,8 +49,11 @@ class Container
         return $this->results[$id];
     }
 
-    /** @param class-string|string $id */
-    public function has($id): bool
+    /** 
+     * @param class-string|string $id 
+     * @return bool
+    */
+    public function has(string $id)
     {
         return array_key_exists($id, $this->definitions)
             || class_exists($id);

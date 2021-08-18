@@ -11,15 +11,15 @@ session_start();
 
 /** 
  * @var Framework\Http\Application $app
- * @var Framework\Container\Container $serviceLocator  
+ * @var Psr\Container\ContainerInterface $container  
  */
 
-$serviceLocator = require 'config' . '/' . 'serviceLocator.php';
+$container = require 'config' . DIRECTORY_SEPARATOR . 'container.php';
 
-$app = $serviceLocator->get(Application::class);
+$app = $container->get(Application::class);
 
-require 'config' . '/' . 'pipeline.php'; 
-require 'config' . '/' . 'routes.php'; 
+require 'config' . DIRECTORY_SEPARATOR . 'pipeline.php'; 
+require 'config' . DIRECTORY_SEPARATOR . 'routes.php'; 
 
 $request = ServerRequestFactory::fromGlobals();
 $response = $app->run($request);

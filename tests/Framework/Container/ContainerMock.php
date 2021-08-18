@@ -2,13 +2,20 @@
 
 namespace Test\Framework\Container;
 
-use Framework\Container\Container;
+use Psr\Container\ContainerInterface;
 use Framework\Container\Exception\ServiceNotFoundException;
 
-class ContainerMock extends Container
+class ContainerMock implements ContainerInterface
 {
-    /** @param class-string $id  */
-    public function get($id): Object
+    /** 
+     * @param class-string $id
+     * 
+     * @throws NotFoundExceptionInterface 
+     * @throws ContainerExceptionInterface
+     *   
+     * @return mixed
+    */
+    public function get(string $id)
     {
         if (! \class_exists($id)) {
             throw new ServiceNotFoundException('Service ' . $id . ' not exists.');
@@ -17,8 +24,11 @@ class ContainerMock extends Container
         return new $id();
     }
 
-    /** @param class-string $id  */
-    public function has($id): bool
+    /** 
+     * @param class-string $id  
+     * @return bool
+    */
+    public function has(string $id): bool
     {
         return \class_exists($id);
     }

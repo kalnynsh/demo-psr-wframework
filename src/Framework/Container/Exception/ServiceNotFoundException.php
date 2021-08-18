@@ -2,5 +2,7 @@
 
 namespace Framework\Container\Exception;
 
-class ServiceNotFoundException extends \InvalidArgumentException
+use Psr\Container\NotFoundExceptionInterface;
+
+class ServiceNotFoundException extends \InvalidArgumentException implements NotFoundExceptionInterface
 { }

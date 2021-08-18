@@ -2,17 +2,17 @@
 
 namespace Framework\Http\Pipeline;
 
-use Framework\Container\Container;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Framework\Http\Middleware\Exception\UnknownMiddlewareTypeException;
 
 class MiddlewareResolver
 {
-    private Container $serviceLocator;
+    private ContainerInterface $container;
 
-    public function __construct(Container $serviceLocator)
+    public function __construct(ContainerInterface $container)
     {
-        $this->serviceLocator = $serviceLocator;
+        $this->container = $container;
     }
 
     /**
@@ -31,10 +31,10 @@ class MiddlewareResolver
         /** @var class-string<MiddlewareInterface>|MiddlewareInterface $handler */
         if (
             \is_string($handler) 
-            && $this->serviceLocator->has($handler)
+            && $this->container->has($handler)
         ) {
             /** @var MiddlewareInterface */
-            $middleware = $this->serviceLocator->get($handler);
+            $middleware = $this->container->get($handler);
 
             if ($middleware instanceof MiddlewareInterface) {
                 return $middleware;
