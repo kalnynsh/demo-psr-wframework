@@ -21,21 +21,21 @@ class BasicAuthMiddleware implements MiddlewareInterface
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
-    ): ResponseInterface 
+    ): ResponseInterface
     {
         /** @var string|null $username */
         $username = $request->getServerParams()['PHP_AUTH_USER'] ?? null;
 
         /** @var string|null $password */
         $password = $request->getServerParams()['PHP_AUTH_PW'] ?? null;
-       
+
 
         if (! empty($username) && ! empty($password)) {
 
-            /** 
-             * @var string $existsUsername 
-             * @var string $existsPassword 
-             * 
+            /**
+             * @var string $existsUsername
+             * @var string $existsPassword
+             *
             */
             foreach ($this->users as $existsUsername => $existsPassword) {
 
@@ -51,7 +51,6 @@ class BasicAuthMiddleware implements MiddlewareInterface
 
         }
 
-        // $response = $handler->handle($request);
         $response = new Response();
 
         return $response

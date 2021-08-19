@@ -1,10 +1,11 @@
 <?php
 
-use Framework\Container\Container;
+use Laminas\ServiceManager\ServiceManager;
 
-/** @var Container $serviceLocator */
-$serviceLocator = new Container(require __DIR__. DIRECTORY_SEPARATOR . 'dependencies.php');
+$config = require __DIR__ . DIRECTORY_SEPARATOR . 'config.php';
 
-$serviceLocator->set('config', require __DIR__ . DIRECTORY_SEPARATOR . 'parameters.php');
+$container = new ServiceManager($config['dependencies']);
 
-return $serviceLocator;
+$container->setService('config', $config);
+
+return $container;

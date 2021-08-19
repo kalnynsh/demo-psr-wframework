@@ -9,17 +9,20 @@ require 'vendor/autoload.php';
 
 session_start();
 
-/** 
+/**
  * @var Framework\Http\Application $app
- * @var Psr\Container\ContainerInterface $container  
+ * @var Psr\Container\ContainerInterface $container
  */
 
 $container = require 'config' . DIRECTORY_SEPARATOR . 'container.php';
 
 $app = $container->get(Application::class);
 
-require 'config' . DIRECTORY_SEPARATOR . 'pipeline.php'; 
-require 'config' . DIRECTORY_SEPARATOR . 'routes.php'; 
+// Pipe app with middleware
+require 'config' . DIRECTORY_SEPARATOR . 'pipeline.php';
+
+// Add routes to app
+require 'config' . DIRECTORY_SEPARATOR . 'routes.php';
 
 $request = ServerRequestFactory::fromGlobals();
 $response = $app->run($request);

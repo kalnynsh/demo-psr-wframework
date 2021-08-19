@@ -1,8 +1,10 @@
 <?php
 
 return [
-    'debug' => true,
-    'users' => [
-        'admin' => 'supassword',
-    ],
+    'options' => [
+        'debug' => true,
+        'users' => [
+            'admin' => 'supassword',
+        ],
+    ],    
 ];
