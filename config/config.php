@@ -8,8 +8,11 @@ defined ('DIR_PREFFIX') || define(
         . DIRECTORY_SEPARATOR
 );
 
-return \array_merge_recursive (
-    require DIR_PREFFIX . 'app.global.php',
-    require DIR_PREFFIX . 'auth.global.php',
-    require DIR_PREFFIX . 'auth.local.php',
+$configs = array_map (
+    function ($file) {
+        return require $file;
+    },
+    glob (DIR_PREFFIX . '{{,*.}global,{,*.}local}.php', GLOB_BRACE)
 );
+
+return \array_merge_recursive (...$configs);
