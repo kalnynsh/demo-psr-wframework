@@ -6,7 +6,7 @@ use Laminas\Stratigility\Middleware\ErrorHandler;
 use Laminas\Stratigility\Middleware\NotFoundHandler;
 use Laminas\Stratigility\Middleware\PathMiddlewareDecorator;
 
-/** @var Psr\Container\ContainerInterface $container */
+
 /** @var Framework\Http\Application $app */
 
 $app->pipe(Middleware\ProfilerMiddleware::class);

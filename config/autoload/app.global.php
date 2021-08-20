@@ -9,11 +9,9 @@ use Framework\Http\Application;
 use Laminas\Diactoros\Response;
 use Aura\Router\RouterContainer;
 
-// use Psr\Container\ContainerInterface;
 use Interop\Container\ContainerInterface;
 use Framework\Http\Router\RouterInterface;
 
-use App\Http\Middleware\BasicAuthMiddleware;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Laminas\Stratigility\Middleware\ErrorHandler;
@@ -21,12 +19,18 @@ use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Stratigility\Middleware\NotFoundHandler;
 use App\Http\Middleware\BasicAuthMiddlewarePathFactory;
 use Framework\Http\Middleware\RouteMiddleware;
+use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Laminas\Stratigility\Middleware\ErrorResponseGenerator;
 use Laminas\Stratigility\Middleware\PathMiddlewareDecorator;
 
 
 return [
     'dependencies' => [
+
+        'abstract_factories' => [
+            ReflectionBasedAbstractFactory::class,
+        ],
+
         'factories' => [
             Home\IndexAction::class => InvokableFactory::class,
             Home\CabinetAction::class => InvokableFactory::class,
@@ -73,17 +77,13 @@ return [
                     return new MiddlewareResolver($container);
             },
 
-            Middleware\BasicAuthMiddleware::class =>
-            function (ContainerInterface $container, $requestedName, ?array $options = null) {
-
-                return new Middleware\BasicAuthMiddleware(
-                $container->get('config')['options']['users']
-                );
-            },
-
             ErrorResponseGenerator::class =>
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
-                $isDebug = $container->get('config')['options']['debug'];
+                $isDebug = $container->get('config')['debug'];
+
+                if (\is_array($isDebug)) {
+                    $isDebug = $isDebug[count($isDebug) - 1];
+                }
 
                 return new ErrorResponseGenerator($isDebug);
             },
@@ -108,4 +108,6 @@ return [
             },
         ],
     ],
+
+    'debug' => false,
 ];
