@@ -2,27 +2,27 @@
 
 use App\Http\Middleware;
 use App\Http\Action\Home;
+use App\Http\Action\Blog;
 
-use  App\Http\Action\Blog;
 use Framework\Http\Application;
-
 use Laminas\Diactoros\Response;
 use Aura\Router\RouterContainer;
+use Framework\Template\TemplateRenderer;
 
 use Interop\Container\ContainerInterface;
 use Framework\Http\Router\RouterInterface;
 
 use Framework\Http\Router\AuraRouterAdapter;
+use Framework\Http\Middleware\RouteMiddleware;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Laminas\Stratigility\Middleware\ErrorHandler;
+use Framework\Http\Middleware\DispatcherMiddleware;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Stratigility\Middleware\NotFoundHandler;
 use App\Http\Middleware\BasicAuthMiddlewarePathFactory;
-use Framework\Http\Middleware\RouteMiddleware;
-use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Laminas\Stratigility\Middleware\ErrorResponseGenerator;
 use Laminas\Stratigility\Middleware\PathMiddlewareDecorator;
-
+use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 
 return [
     'dependencies' => [
@@ -32,7 +32,6 @@ return [
         ],
 
         'factories' => [
-            Home\IndexAction::class => InvokableFactory::class,
             Home\CabinetAction::class => InvokableFactory::class,
             Home\AboutAction::class => InvokableFactory::class,
             Blog\IndexAction::class => InvokableFactory::class,
@@ -40,7 +39,6 @@ return [
             Response::class => InvokableFactory::class,
             Middleware\ProfilerMiddleware::class => InvokableFactory::class,
             Middleware\CredentialsMiddleware::class => InvokableFactory::class,
-            Framework\Http\Middleware\DispatcherMiddleware::class => InvokableFactory::class,
 
             /** @param string $requestedName */
             Application::class =>
@@ -48,6 +46,23 @@ return [
                 return new Application(
                     $container->get(MiddlewareResolver::class),
                     $container->get(RouterInterface::class)
+                );
+            },
+
+            ErrorHandler::class =>
+            function (ContainerInterface $container, $requestedName, ?array $options = null) {
+                return new ErrorHandler(
+                    function () use ($container) {
+                        return $container->get(Response::class);
+                    },
+                    $container->get(ErrorResponseGenerator::class)
+                );
+            },
+
+            DispatcherMiddleware::class =>
+            function (ContainerInterface $container, $requestedName, ?array $options = null) {
+                return new DispatcherMiddleware(
+                    $container->get(MiddlewareResolver::class)
                 );
             },
 
@@ -88,17 +103,19 @@ return [
                 return new ErrorResponseGenerator($isDebug);
             },
 
-            ErrorHandler::class =>
+            PathMiddlewareDecorator::class => BasicAuthMiddlewarePathFactory::class,
+
+            TemplateRenderer::class =>
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
-                return new ErrorHandler(
-                    function () use ($container) {
-                        return $container->get(Response::class);
-                    },
-                    $container->get(ErrorResponseGenerator::class)
-                );
+                return new TemplateRenderer(dirname(__DIR__, 2) . '/src/templates');
             },
 
-            PathMiddlewareDecorator::class => BasicAuthMiddlewarePathFactory::class,
+            Home\IndexAction::class =>
+            function (ContainerInterface $container, $requestedName, ?array $options = null) {
+                return new Home\IndexAction(
+                    $container->get(TemplateRenderer::class)
+                );
+            },
 
             NotFoundHandler::class =>
             function (ContainerInterface $container, $requestedName, ?array $options = null) {

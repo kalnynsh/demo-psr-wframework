@@ -2,6 +2,7 @@
 
 namespace Framework\Http\Middleware;
 
+use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\Result;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -10,10 +11,16 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class DispatcherMiddleware implements MiddlewareInterface
 {
+    private MiddlewareResolver $resolver;
+
+    public function __construct(MiddlewareResolver $resolver)
+    {
+        $this->resolver = $resolver;
+    }
 
     public function process(
-        ServerRequestInterface $request, 
-        RequestHandlerInterface $handler       
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
     ): ResponseInterface
     {
 
@@ -21,12 +28,12 @@ class DispatcherMiddleware implements MiddlewareInterface
         if (! $result = $request->getAttribute(Result::class)) {
             return $handler->handle($request);
         }
-        
+
         /** @psalm-var class-string<RequestHandlerInterface> $handlerClass */
         $handlerClass = $result->getHandler();
 
         /** @var RequestHandlerInterface $routerHandler */
-        $routerHandler = new $handlerClass();
+        $routerHandler = $this->resolver->resolve($handlerClass);
 
         return $routerHandler->handle($request);
     }
