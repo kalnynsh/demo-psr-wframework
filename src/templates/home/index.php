@@ -9,14 +9,23 @@ $topLayout = dirname(__DIR__)
 
 require_once $topLayout;
 
+/** @var string $header  */
+$header = dirname(__DIR__)
+    . DIRECTORY_SEPARATOR
+    . 'layout'
+    . DIRECTORY_SEPARATOR
+    . 'header.php';
+
+require_once $header;
+
 ?>
-
-
 
 <main class="container">
     <section class="row">
-        <h1>Greetings</h1>
-        <p>Hello, <?= $name ; ?>!</p>
+        <div class="col-12 col-md-auto">
+            <h1>Greetings</h1>
+            <p>Hello, <?= htmlspecialchars($name) ?>!</p>
+        </div>        
     </section>
 </main>
 
