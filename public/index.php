@@ -25,6 +25,7 @@ require 'config' . DIRECTORY_SEPARATOR . 'pipeline.php';
 require 'config' . DIRECTORY_SEPARATOR . 'routes.php';
 
 $request = ServerRequestFactory::fromGlobals();
+
 $response = $app->run($request);
 
 $emmiter = new SapiEmitter();

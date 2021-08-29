@@ -1,0 +1,9 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d 
+    RewriteCond %{REQUEST_URI} !^/index.php$
+    # RewriteCond %{HTTP_ACCEPT} text/html
+    # RewriteRule . /index.php [L,R=301]
+    RewriteRule . index.php [L,R=301]
+</IfModule>

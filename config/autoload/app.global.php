@@ -33,7 +33,6 @@ return [
 
         'factories' => [
             Home\CabinetAction::class => InvokableFactory::class,
-            Home\AboutAction::class => InvokableFactory::class,
             Blog\IndexAction::class => InvokableFactory::class,
             Blog\ShowAction::class => InvokableFactory::class,
             Response::class => InvokableFactory::class,
@@ -113,6 +112,13 @@ return [
             Home\IndexAction::class =>
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
                 return new Home\IndexAction(
+                    $container->get(TemplateRenderer::class)
+                );
+            },
+
+            Home\AboutAction::class =>
+            function (ContainerInterface $container, $requestedName, ?array $options = null) {
+                return new Home\AboutAction(
                     $container->get(TemplateRenderer::class)
                 );
             },
