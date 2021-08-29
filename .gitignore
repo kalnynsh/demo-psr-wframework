@@ -1,3 +1,5 @@
+vendor
+
 vendor/*/**
 
 projectInfo
@@ -5,3 +7,5 @@ projectInfo
 .phpunit.result.cache
 
 .directory
+
+var
