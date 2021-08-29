@@ -1,9 +1,23 @@
 <IfModule mod_rewrite.c>
-    RewriteEngine on
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d 
-    RewriteCond %{REQUEST_URI} !^/index.php$
+    # RewriteEngine on
+
+    # RewriteBase /public/
+
+    # RewriteCond %{REQUEST_FILENAME} !-f
+    # RewriteCond %{REQUEST_FILENAME} !-d 
+    # RewriteCond %{REQUEST_URI} !\.(css|gif|ico|jpg|js|png|swf|txt|svg|woff|ttf|eot)$
+
     # RewriteCond %{HTTP_ACCEPT} text/html
-    # RewriteRule . /index.php [L,R=301]
-    RewriteRule . index.php [L,R=301]
+
+    # RewriteCond %{REQUEST_URI}% !^/img/
+    # RewriteCond %{REQUEST_URI}% !^/css/
+    # RewriteCond %{REQUEST_URI}% !^/js/
+
+    # RewriteCond %{REQUEST_URI} !^/index.php$   
+
+    # RewriteRule ^/index\.php$ - [L,NC]
+
+    # RewriteRule . index.php [L]
+
+    # RewriteRule ^(.*)$ /index.php [L,QSA]    
 </IfModule>

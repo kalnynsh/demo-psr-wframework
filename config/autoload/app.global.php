@@ -31,8 +31,7 @@ return [
             ReflectionBasedAbstractFactory::class,
         ],
 
-        'factories' => [
-            Home\CabinetAction::class => InvokableFactory::class,
+        'factories' => [            
             Blog\IndexAction::class => InvokableFactory::class,
             Blog\ShowAction::class => InvokableFactory::class,
             Response::class => InvokableFactory::class,
@@ -46,6 +45,17 @@ return [
                     $container->get(MiddlewareResolver::class),
                     $container->get(RouterInterface::class)
                 );
+            },
+
+            ErrorResponseGenerator::class =>
+            function (ContainerInterface $container, $requestedName, ?array $options = null) {
+                $isDebug = $container->get('config')['debug'];
+
+                if (\is_array($isDebug)) {
+                    $isDebug = $isDebug[count($isDebug) - 1];
+                }
+
+                return new ErrorResponseGenerator($isDebug);
             },
 
             ErrorHandler::class =>
@@ -89,18 +99,7 @@ return [
             MiddlewareResolver::class =>
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
                     return new MiddlewareResolver($container);
-            },
-
-            ErrorResponseGenerator::class =>
-            function (ContainerInterface $container, $requestedName, ?array $options = null) {
-                $isDebug = $container->get('config')['debug'];
-
-                if (\is_array($isDebug)) {
-                    $isDebug = $isDebug[count($isDebug) - 1];
-                }
-
-                return new ErrorResponseGenerator($isDebug);
-            },
+            },           
 
             PathMiddlewareDecorator::class => BasicAuthMiddlewarePathFactory::class,
 
@@ -119,6 +118,13 @@ return [
             Home\AboutAction::class =>
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
                 return new Home\AboutAction(
+                    $container->get(TemplateRenderer::class)
+                );
+            },
+
+            Home\CabinetAction::class => 
+            function (ContainerInterface $container, $requestedName, ?array $options = null) {
+                return new Home\CabinetAction(
                     $container->get(TemplateRenderer::class)
                 );
             },

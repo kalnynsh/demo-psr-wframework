@@ -24,9 +24,9 @@ require_once $header;
 
     <main>
 
-        <h1>Description</h1>
+        <h1>Cabinet</h1>
         <p class="fs-5 col-md-8">
-            <?= $aboutContent ?>
+            Hello, <?= htmlspecialchars($username, ENT_QUOTES | ENT_SUBSTITUTE) ?>! 
         </p>
 
     </main>
