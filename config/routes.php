@@ -9,9 +9,9 @@ $app->addGetRoute('home', '/', Action\Home\IndexAction::class);
 $app->addGetRoute('about', '/about', Action\Home\AboutAction::class);
 
 $app->addGetRoute(
-    'cabinet', 
-    '/cabinet',      
-    Action\Home\CabinetAction::class 
+    'cabinet',
+    '/cabinet',
+    Action\Home\CabinetAction::class
 );
 
 $app->addGetRoute('blog', '/blog', Action\Blog\IndexAction::class);
@@ -22,5 +22,5 @@ $app->addGetRoute(
     Action\Blog\ShowAction::class,
     [
         'tokens' => ['id' => '\\d+',],
-    ]   
+    ]
 );

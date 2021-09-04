@@ -7,7 +7,7 @@ use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 
-session_start();
+// session_start();
 
 /**
  * @var Framework\Http\Application $app

@@ -5,6 +5,8 @@ namespace Framework\Template;
 class TemplateRenderer implements TemplateRendererInterface
 {
     private string $path;
+    private ?string $extend;
+    private array $params = [];
 
     public function __construct(string $path)
     {
@@ -26,14 +28,25 @@ class TemplateRenderer implements TemplateRendererInterface
         $templateFile = $this->path . DIRECTORY_SEPARATOR . $view . '.php';
 
         if (! file_exists($templateFile)) {
-            throw new VewFileNotExists();
+            throw new VewFileNotExists('Given ' . $templateFile . ' file not exists.');
         }
 
         ob_start();
         extract($params, EXTR_OVERWRITE);
 
+        $this->extend = null;
+
         require $templateFile;
 
-        return ob_get_clean();
+        /** @var string */
+        $content = ob_get_clean();
+
+        if (! $this->extend) {
+            return $content;
+        }
+
+        return $this->render($this->extend, [
+            'content' => $content,
+        ]);
     }
 }

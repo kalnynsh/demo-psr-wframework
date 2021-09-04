@@ -31,7 +31,7 @@ return [
             ReflectionBasedAbstractFactory::class,
         ],
 
-        'factories' => [            
+        'factories' => [
             Blog\IndexAction::class => InvokableFactory::class,
             Blog\ShowAction::class => InvokableFactory::class,
             Response::class => InvokableFactory::class,
@@ -99,13 +99,13 @@ return [
             MiddlewareResolver::class =>
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
                     return new MiddlewareResolver($container);
-            },           
+            },
 
             PathMiddlewareDecorator::class => BasicAuthMiddlewarePathFactory::class,
 
             TemplateRenderer::class =>
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
-                return new TemplateRenderer(dirname(__DIR__, 2) . '/src/templates');
+                return new TemplateRenderer(dirname(__DIR__, 2) . '/templates');
             },
 
             Home\IndexAction::class =>
@@ -122,7 +122,7 @@ return [
                 );
             },
 
-            Home\CabinetAction::class => 
+            Home\CabinetAction::class =>
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
                 return new Home\CabinetAction(
                     $container->get(TemplateRenderer::class)
