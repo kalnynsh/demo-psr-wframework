@@ -6,7 +6,7 @@ namespace Framework\Template;
  * Resolving view path postfix for action class
  * like $actionClassName = App\Http\Action\Home\IndexAction,
  * $actionDir = ~/App/Http/Action/HomeIndexAction
- * 
+ *
  * result $this->getViewPathPostfix() return 'home/index'
  */
 class ViewPathResolver
@@ -37,8 +37,7 @@ class ViewPathResolver
     public function getLastWord(
         string $wordWithSeparators,
         string $separator = '\\'
-    ): string
-    {
+    ): string {
         if ($namePosition = strrpos($wordWithSeparators, $separator)) {
             return substr($wordWithSeparators, $namePosition + 1);
         }
