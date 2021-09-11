@@ -2,7 +2,7 @@
 /** @var \Framework\Template\TemplateRenderer $this */
 ?>
 
-<?php $this->extend = 'layout/main'; ?>
+<?php $this->extend('layout/main'); ?>
 
 <?php $this->params['title'] = 'About'; ?>
 

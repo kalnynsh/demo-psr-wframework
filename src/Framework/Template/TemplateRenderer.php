@@ -49,4 +49,9 @@ class TemplateRenderer implements TemplateRendererInterface
             'content' => $content,
         ]);
     }
+
+    public function extend(string $view): void
+    {
+        $this->extend = $view;
+    }
 }
