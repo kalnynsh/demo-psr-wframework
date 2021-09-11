@@ -8,9 +8,13 @@ class TemplateRenderer implements TemplateRendererInterface
     private ?string $extend;
     private array $params = [];
 
+    private array $blocks = [];
+    private \SplStack $blockNames;
+
     public function __construct(string $path)
     {
         $this->path = $path;
+        $this->blockNames = new \SplStack();
     }
 
     /**
@@ -53,5 +57,22 @@ class TemplateRenderer implements TemplateRendererInterface
     public function extend(string $view): void
     {
         $this->extend = $view;
+    }
+
+    public function blockBegin(string $blockName): void
+    {
+        $this->blockNames->push($blockName);
+        ob_start();
+    }
+
+    public function blockEnd(): void
+    {
+        $name = $this->blockNames->pop();
+        $this->blocks[$name] = (string) ob_get_clean();
+    }
+
+    public function blockRender(string $name): string
+    {
+        return $this->blocks[$name];
     }
 }
