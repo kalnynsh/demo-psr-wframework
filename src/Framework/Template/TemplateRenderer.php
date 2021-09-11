@@ -73,6 +73,6 @@ class TemplateRenderer implements TemplateRendererInterface
 
     public function blockRender(string $name): string
     {
-        return $this->blocks[$name];
+        return $this->blocks[$name] ?? '';
     }
 }
