@@ -1,0 +1,9 @@
+FROM php:8.0-fpm
+
+RUN apt-get update \
+    && apt-get install -y libpq5 libpq-dev \
+    && docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install -j$(nproc) pgsql \
+    && docker-php-ext-install -j$(nproc) pdo_pgsql
+
+WORKDIR /app

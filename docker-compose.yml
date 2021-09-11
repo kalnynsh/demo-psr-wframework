@@ -1,0 +1,42 @@
+version: '3'
+services:
+  psrfw-nginx:
+    build:
+      context: ./docker/development
+      dockerfile: nginx.docker
+    volumes:
+      - ./:/app
+    depends_on:
+      - psrfw-php-fpm
+    ports:
+      - '8001:80'
+  psrfw-php-fpm:
+    build:
+      context: ./docker/development
+      dockerfile: php-fpm.docker
+    volumes:
+      - ./:/app
+    depends_on:
+      - psrfw-postgres
+  psrfw-php-cli:
+    build:
+      context: ./docker/development
+      dockerfile: php-cli.docker
+    volumes:
+      - ./:/app
+      - composer:/root/.composer/cache
+    depends_on:
+      - psrfw-postgres
+  psrfw-postgres:
+        image: postgres:13.4-alpine
+        volumes:
+            - ./docker/wdata/pgsql/data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_USER: app
+            POSTGRES_PASSWORD: secret
+            POSTGRES_DB: app
+        ports:
+            - '54321:5432'
+
+volumes:
+  composer:
