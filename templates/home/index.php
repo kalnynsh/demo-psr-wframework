@@ -6,6 +6,15 @@
 
 <?php $this->params['title'] = 'Home'; ?>
 
+<?php $this->blockBegin('meta'); ?>
+
+    <meta
+        name="description"
+        content="Home page"
+    />
+
+<?php $this->blockEnd(); ?>
+
 <?php $this->blockBegin('topNavbar'); ?>
 
     <div class="container">

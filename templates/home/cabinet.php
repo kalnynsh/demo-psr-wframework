@@ -6,7 +6,14 @@
 
 <?php $this->params['title'] = 'Cabinet'; ?>
 
-<?php $this->blockBegin('leftSidebar'); ?>
+<?php $this->blockBegin('meta'); ?>
+
+    <meta
+        name="description"
+        content="User's cabinet page"
+    />
+
+<?php $this->blockEnd(); ?>
 
 <?php $this->blockBegin('topNavbar'); ?>
 
@@ -38,6 +45,8 @@
     </div>
 
 <?php $this->blockEnd(); ?>
+
+<?php $this->blockBegin('leftSidebar'); ?>
 
   <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
             <div class="position-sticky pt-3">
