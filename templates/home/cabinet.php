@@ -4,7 +4,9 @@
 
 <?php $this->extend('layout/columns'); ?>
 
-<?php $this->params['title'] = 'Cabinet'; ?>
+<?php $this->blockBegin('title'); ?>
+    Cabinet
+<?php $this->blockEnd(); ?>
 
 <?php $this->blockBegin('meta'); ?>
 

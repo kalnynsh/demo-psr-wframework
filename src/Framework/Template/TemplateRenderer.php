@@ -6,8 +6,6 @@ class TemplateRenderer implements TemplateRendererInterface
 {
     private string $path;
     private ?string $extend;
-    private array $params = [];
-
     private array $blocks = [];
     private \SplStack $blockNames;
 

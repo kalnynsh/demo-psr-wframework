@@ -4,7 +4,9 @@
 
 <?php $this->extend('layout/main'); ?>
 
-<?php $this->params['title'] = 'About'; ?>
+<?php $this->blockBegin('title'); ?>
+    About
+<?php $this->blockEnd(); ?>
 
 <?php $this->blockBegin('meta'); ?>
 

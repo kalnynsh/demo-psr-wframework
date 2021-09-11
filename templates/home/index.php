@@ -4,7 +4,9 @@
 
 <?php $this->extend('layout/main'); ?>
 
-<?php $this->params['title'] = 'Home'; ?>
+<?php $this->blockBegin('title'); ?>
+    Home
+<?php $this->blockEnd(); ?>
 
 <?php $this->blockBegin('meta'); ?>
 
