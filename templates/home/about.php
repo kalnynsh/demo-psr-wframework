@@ -70,12 +70,15 @@
 
 <?php $this->blockEnd(); ?>
 
-<div class="col-lg-8 mx-auto p-3 py-md-5">
+<?php $this->blockBegin('content'); ?>
 
-    <h1>Description</h1>
-    <p class="fs-5 col-md-8">
-        <?= $aboutContent ?>
-    </p>
+    <div class="col-lg-8 mx-auto p-3 py-md-5">
 
-</div>
+        <h1>Description</h1>
+        <p class="fs-5">
+            <?= $aboutContent ?>
+        </p>
 
+    </div>
+
+<?php $this->blockEnd(); ?>

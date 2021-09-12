@@ -47,9 +47,7 @@ class TemplateRenderer implements TemplateRendererInterface
             return $content;
         }
 
-        return $this->render($this->extend, [
-            'content' => $content,
-        ]);
+        return $this->render($this->extend);
     }
 
     public function extend(string $view): void

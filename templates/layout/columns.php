@@ -3,16 +3,18 @@
 ?>
 <?php $this->extend('layout/main'); ?>
 
-<div class="container-fluid">
+<?php $this->blockBegin('content'); ?>
 
-    <div class="row">
+    <div class="container-fluid">
 
-        <?= $this->blockRender('leftSidebar'); ?>
+        <div class="row">
 
-        <div class="col-lg-8 mx-auto p-3 py-md-5">
-            <?= $content ?>
+            <?= $this->blockRender('leftSidebar'); ?>
+
+            <?= $this->blockRender('description'); ?>
+
         </div>
 
     </div>
 
-</div>
+<?php $this->blockEnd(); ?>
