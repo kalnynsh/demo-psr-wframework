@@ -63,12 +63,34 @@ class TemplateRenderer implements TemplateRendererInterface
 
     public function blockEnd(): void
     {
-        $name = $this->blockNames->pop();
-        $this->blocks[$name] = (string) ob_get_clean();
+        $bufferContent = (string) ob_get_clean();
+        $blockName = (string) $this->blockNames->pop();
+
+        if ($this->blockExists($blockName)) {
+            return;
+        }
+
+        $this->blocks[$blockName] = $bufferContent;
     }
 
     public function blockRender(string $name): string
     {
         return $this->blocks[$name] ?? '';
+    }
+
+    public function blockEnsure(string $blockName): bool
+    {
+        if ($this->blockExists($blockName)) {
+            return false;
+        }
+
+        $this->blockBegin($blockName);
+
+        return true;
+    }
+
+    private function blockExists(string $name): bool
+    {
+        return array_key_exists($name, $this->blocks);
     }
 }
