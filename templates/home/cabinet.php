@@ -41,8 +41,7 @@
             <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
                 <li><a href="<?= $this->encode($this->path('home')) ?>" class="nav-link px-2 link-secondary ">Home</a></li>
                 <li><a href="<?= $this->encode($this->path('cabinet')) ?>" class="nav-link px-2 link-dark active">Cabinet</a></li>
-                <li><a href="#" class="nav-link px-2 link-secondary">Pricing</a></li>
-                <li><a href="#" class="nav-link px-2 link-secondary">FAQs</a></li>
+                <li><a href="<?= $this->encode($this->path('blog')) ?>" class="nav-link px-2 link-secondary">Blog</a></li>
                 <li><a href="<?= $this->encode($this->path('about')) ?>" class="nav-link px-2 link-secondary">About</a></li>
             </ul>
 

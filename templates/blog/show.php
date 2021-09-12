@@ -5,14 +5,14 @@
 <?php $this->extend('layout/main'); ?>
 
 <?php $this->blockBegin('title'); ?>
-    Home
+    <?= $this->encode($post->title) ?>
 <?php $this->blockEnd(); ?>
 
 <?php $this->blockBegin('meta'); ?>
 
     <meta
         name="description"
-        content="Home page"
+        content="<?= $this->encode($post->title) ?>"
     />
 
 <?php $this->blockEnd(); ?>
@@ -36,9 +36,10 @@
             </a>
 
             <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="<?= $this->encode($this->path('home')) ?>" class="nav-link px-2 link-dark active ">Home</a></li>
+                <li><a href="<?= $this->encode($this->path('home')) ?>" class="nav-link px-2 link-secondary">Home</a></li>
                 <li><a href="<?= $this->encode($this->path('cabinet')) ?>" class="nav-link px-2 link-secondary">Cabinet</a></li>
                 <li><a href="<?= $this->encode($this->path('blog')) ?>" class="nav-link px-2 link-secondary">Blog</a></li>
+                <li><a href="#" class="nav-link px-2 link-dark active"><?= $this->encode($post->title); ?></a></li>
                 <li><a href="<?= $this->encode($this->path('about')) ?>" class="nav-link px-2 link-secondary">About</a></li>
             </ul>
 
@@ -53,18 +54,29 @@
 
 <?php $this->blockBegin('content'); ?>
 
-<div class="container py-4">
-    <div class="h-100 p-5 mb-4 bg-light rounded-3">
+    <div class="container py-4">
 
-        <div class="container-fluid py-5">
+        <h1><?= $this->encode($post->title); ?></h1>
 
-            <h1 class="display-5 fw-bold">Greetings</h1>
-            <p class="col-md-8 fs-4">
-                Hello, <?= htmlspecialchars($name) ?>!
-            </p>
+        <div class="p-5 mb-2 bg-light rounded-3">
 
+            <div class="container-fluid py-1">
+                <div class="row">
+
+                    <div class="col-md-8">
+                        <h4 class="display-7 fw-bold">
+                            <?= $post->date->format('Y-m-d') . ': ' . $this->encode($post->title); ?>
+                        </h4>
+
+                        <p class="fs-2">
+                            <?= \nl2br($this->encode($post->content)); ?>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
         </div>
+
     </div>
-</div>
 
 <?php $this->blockEnd(); ?>

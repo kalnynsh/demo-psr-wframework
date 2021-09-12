@@ -1,26 +1,28 @@
 <?php
 
 use App\Http\Middleware;
-use App\Http\Action\Home;
 use App\Http\Action\Blog;
+use App\Http\Action\Home;
 
 use Framework\Http\Application;
 use Laminas\Diactoros\Response;
 use Aura\Router\RouterContainer;
+use App\Repository\Post\PostRepository;
+
 use Framework\Template\TemplateRenderer;
+use App\DataGenerator\Post\PostGenerator;
 
 use Interop\Container\ContainerInterface;
 use Framework\Http\Router\RouterInterface;
-
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Middleware\RouteMiddleware;
 use Framework\Http\Pipeline\MiddlewareResolver;
+use Framework\Template\TemplateRendererInterface;
 use Laminas\Stratigility\Middleware\ErrorHandler;
 use Framework\Http\Middleware\DispatcherMiddleware;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Stratigility\Middleware\NotFoundHandler;
 use App\Http\Middleware\BasicAuthMiddlewarePathFactory;
-use Framework\Template\TemplateRendererInterface;
 use Laminas\Stratigility\Middleware\ErrorResponseGenerator;
 use Laminas\Stratigility\Middleware\PathMiddlewareDecorator;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
@@ -33,11 +35,10 @@ return [
         ],
 
         'factories' => [
-            Blog\IndexAction::class => InvokableFactory::class,
-            Blog\ShowAction::class => InvokableFactory::class,
             Response::class => InvokableFactory::class,
             Middleware\ProfilerMiddleware::class => InvokableFactory::class,
             Middleware\CredentialsMiddleware::class => InvokableFactory::class,
+            PostGenerator::class => InvokableFactory::class,
 
             /** @param string $requestedName */
             Application::class =>
@@ -132,6 +133,29 @@ return [
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
                 return new Home\CabinetAction(
                     $container->get(TemplateRendererInterface::class)
+                );
+            },
+
+            Blog\IndexAction::class =>
+            function (ContainerInterface $container, $requestedName, ?array $options = null) {
+                return new  Blog\IndexAction(
+                    $container->get(PostRepository::class),
+                    $container->get(TemplateRendererInterface::class)
+                );
+            },
+
+            Blog\ShowAction::class =>
+            function (ContainerInterface $container, $requestedName, ?array $options = null) {
+                return new Blog\ShowAction(
+                    $container->get(PostRepository::class),
+                    $container->get(TemplateRendererInterface::class)
+                );
+            },
+
+            PostRepository::class =>
+            function (ContainerInterface $container, $requestedName, ?array $options = null) {
+                return new PostRepository(
+                    $container->get(PostGenerator::class)
                 );
             },
 
