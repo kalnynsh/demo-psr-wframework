@@ -2,17 +2,21 @@
 
 namespace Framework\Template;
 
+use Framework\Http\Router\RouterInterface;
+
 class TemplateRenderer implements TemplateRendererInterface
 {
-    private string $path;
+    private string $viewPathRoot;
     private ?string $extend;
     private array $blocks = [];
     private \SplStack $blockNames;
+    private RouterInterface $router;
 
-    public function __construct(string $path)
+    public function __construct(string $viewPathRoot, RouterInterface $router)
     {
-        $this->path = $path;
+        $this->viewPathRoot = $viewPathRoot;
         $this->blockNames = new \SplStack();
+        $this->router = $router;
     }
 
     public function setBlockCallback(string $name, \Closure $blockCallback): void
@@ -36,7 +40,7 @@ class TemplateRenderer implements TemplateRendererInterface
     public function render(string $view, array $params = []): ?string
     {
         /** @var string $templateFile */
-        $templateFile = $this->path . DIRECTORY_SEPARATOR . $view . '.php';
+        $templateFile = $this->viewPathRoot . DIRECTORY_SEPARATOR . $view . '.php';
 
         if (! file_exists($templateFile)) {
             throw new VewFileNotExists('Given ' . $templateFile . ' file not exists.');
@@ -121,5 +125,10 @@ class TemplateRenderer implements TemplateRendererInterface
     private function blockExists(string $name): bool
     {
         return array_key_exists($name, $this->blocks);
+    }
+
+    public function path(string $pathName, array $params = []): string
+    {
+        return (string) $this->router->generate($pathName, $params);
     }
 }

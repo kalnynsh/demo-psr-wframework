@@ -3,18 +3,18 @@
 namespace App\Http\Action\Home;
 
 use Psr\Http\Message\ResponseInterface;
-use Framework\Template\TemplateRenderer;
 use Framework\Template\ViewPathResolver;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Framework\Template\TemplateRendererInterface;
 
 class AboutAction implements RequestHandlerInterface
 {
-    private TemplateRenderer $renderer;
+    private TemplateRendererInterface $renderer;
     private ViewPathResolver $viewPathResolver;
 
-    public function __construct(TemplateRenderer $renderer)
+    public function __construct(TemplateRendererInterface $renderer)
     {
         $this->renderer = $renderer;
 

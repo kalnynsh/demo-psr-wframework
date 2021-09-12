@@ -3,7 +3,7 @@
 namespace App\Http\Action\Home;
 
 use Psr\Http\Message\ResponseInterface;
-use Framework\Template\TemplateRenderer;
+use Framework\Template\TemplateRendererInterface;
 use Framework\Template\ViewPathResolver;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface;
@@ -11,13 +11,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class IndexAction implements RequestHandlerInterface
 {
-    private TemplateRenderer $renderer;
+    private TemplateRendererInterface $renderer;
     private ViewPathResolver $viewPathResolver;
 
     public function __construct(
-        TemplateRenderer $renderer
-    )
-    {
+        TemplateRendererInterface $renderer
+    ) {
         $this->renderer = $renderer;
 
         $this->viewPathResolver = new ViewPathResolver(

@@ -20,6 +20,7 @@ use Framework\Http\Middleware\DispatcherMiddleware;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Stratigility\Middleware\NotFoundHandler;
 use App\Http\Middleware\BasicAuthMiddlewarePathFactory;
+use Framework\Template\TemplateRendererInterface;
 use Laminas\Stratigility\Middleware\ErrorResponseGenerator;
 use Laminas\Stratigility\Middleware\PathMiddlewareDecorator;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
@@ -103,29 +104,34 @@ return [
 
             PathMiddlewareDecorator::class => BasicAuthMiddlewarePathFactory::class,
 
-            TemplateRenderer::class =>
+            TemplateRendererInterface::class =>
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
-                return new TemplateRenderer(dirname(__DIR__, 2) . '/templates');
+                $viewPathRoot = dirname(__DIR__, 2) . '/templates';
+
+                return new TemplateRenderer(
+                    $viewPathRoot,
+                    $container->get(RouterInterface::class)
+                );
             },
 
             Home\IndexAction::class =>
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
                 return new Home\IndexAction(
-                    $container->get(TemplateRenderer::class)
+                    $container->get(TemplateRendererInterface::class)
                 );
             },
 
             Home\AboutAction::class =>
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
                 return new Home\AboutAction(
-                    $container->get(TemplateRenderer::class)
+                    $container->get(TemplateRendererInterface::class)
                 );
             },
 
             Home\CabinetAction::class =>
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
                 return new Home\CabinetAction(
-                    $container->get(TemplateRenderer::class)
+                    $container->get(TemplateRendererInterface::class)
                 );
             },
 
