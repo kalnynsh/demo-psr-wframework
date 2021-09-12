@@ -138,7 +138,7 @@
     <div class="col-lg-8 mx-auto p-3 py-md-5">
         <h1>Cabinet</h1>
         <p class="fs-5">
-            Hello, <?= htmlspecialchars($username, ENT_QUOTES | ENT_SUBSTITUTE) ?>!
+            Hello, <?= $this->encode($username); ?>!
         </p>
     </div>
 

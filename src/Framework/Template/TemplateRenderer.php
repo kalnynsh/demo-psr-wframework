@@ -113,6 +113,11 @@ class TemplateRenderer implements TemplateRendererInterface
         return true;
     }
 
+    public function encode(string $notSafeContent): string
+    {
+        return htmlspecialchars($notSafeContent, ENT_QUOTES | ENT_SUBSTITUTE);
+    }
+
     private function blockExists(string $name): bool
     {
         return array_key_exists($name, $this->blocks);
