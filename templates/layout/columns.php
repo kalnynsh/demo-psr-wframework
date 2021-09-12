@@ -9,7 +9,8 @@
 
         <div class="row">
 
-            <?php if ($this->blockEnsure('leftSidebar')): ?>
+            <?php $this->setBlockCallback('leftSidebar', function () {  ?>
+                <?php ob_start(); ?>
 
                 <div class="container">
                     <header
@@ -45,8 +46,9 @@
                     </header>
                 </div>
 
-                <?php $this->blockEnd(); ?>
-            <?php endif; ?>
+                <?php return ob_get_clean(); ?>
+
+            <?php }); ?>
 
             <?= $this->blockRender('leftSidebar'); ?>
 

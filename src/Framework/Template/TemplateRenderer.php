@@ -15,6 +15,15 @@ class TemplateRenderer implements TemplateRendererInterface
         $this->blockNames = new \SplStack();
     }
 
+    public function setBlockCallback(string $name, \Closure $blockCallback): void
+    {
+        if ($this->blockExists($name)) {
+            return;
+        }
+
+        $this->blocks[$name] = $blockCallback;
+    }
+
     /**
      * Render given view
      *
@@ -75,7 +84,22 @@ class TemplateRenderer implements TemplateRendererInterface
 
     public function blockRender(string $name): string
     {
-        return $this->blocks[$name] ?? '';
+        if (is_string($this->blocks[$name])) {
+            return $this->blocks[$name] ?? '';
+        }
+
+        return $this->blockCallbackRender($name);
+    }
+
+    public function blockCallbackRender(string $name): string
+    {
+        $blockCallback = $this->blocks[$name];
+
+        if ($blockCallback instanceof \Closure) {
+            return $blockCallback();
+        }
+
+        return '';
     }
 
     public function blockEnsure(string $blockName): bool
