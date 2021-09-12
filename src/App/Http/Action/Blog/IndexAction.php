@@ -2,20 +2,34 @@
 
 namespace App\Http\Action\Blog;
 
+use App\Repository\Post\PostRepository;
 use Psr\Http\Message\ResponseInterface;
-use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Framework\Template\TemplateRendererInterface;
 
 class IndexAction implements RequestHandlerInterface
 {
+    private PostRepository $repository;
+    private TemplateRendererInterface $renderer;
+
+    public function __construct(
+        PostRepository $repository,
+        TemplateRendererInterface $renderer
+    ) {
+        $this->repository = $repository;
+        $this->renderer = $renderer;
+    }
+
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return new JsonResponse(
-            [
-                ['id' => 2, 'title' => 'The Second Post'],
-                ['id' => 1, 'title' => 'The First Post'],
-            ]
+        $posts = $this->repository->getAll();
+
+        return new HtmlResponse(
+           $this->renderer->render('blog/index', [
+               'posts' => $posts,
+           ])
         );
     }
 }
