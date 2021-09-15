@@ -39,22 +39,32 @@ class TemplateRenderer implements TemplateRendererInterface
      */
     public function render(string $view, array $params = []): ?string
     {
+        /** @var int $level */
+        $level = ob_get_level();
+
         /** @var string $templateFile */
         $templateFile = $this->viewPathRoot . DIRECTORY_SEPARATOR . $view . '.php';
+        $this->extend = null;
 
         if (! file_exists($templateFile)) {
             throw new VewFileNotExists('Given ' . $templateFile . ' file not exists.');
         }
 
-        ob_start();
-        extract($params, EXTR_OVERWRITE);
+        try {
+            ob_start();
+            extract($params, EXTR_OVERWRITE);
+            require $templateFile;
 
-        $this->extend = null;
+            /** @var string */
+            $content = ob_get_clean();
+        } catch (\Throwable|\Exception $exc) {
+            while (ob_get_level() > $level) {
+                ob_end_clean();
+            }
 
-        require $templateFile;
+            throw $exc;
+        }
 
-        /** @var string */
-        $content = ob_get_clean();
 
         if (! $this->extend) {
             return $content;
