@@ -1,5 +1,5 @@
 <?php
-/** @var \Framework\Template\TemplateRenderer $this */
+/** @var \Framework\Template\Php\TemplateRenderer $this */
 ?>
 
 <?php $this->extend('layout/main'); ?>

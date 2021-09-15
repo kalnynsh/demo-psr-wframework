@@ -1,22 +1,31 @@
 <?php
 
-namespace Framework\Template;
+namespace Framework\Template\Php;
 
+use Framework\Template\Php\Extension;
+use Framework\Template\VewFileNotExists;
 use Framework\Http\Router\RouterInterface;
+use Framework\Template\TemplateRendererInterface;
 
 class TemplateRenderer implements TemplateRendererInterface
 {
     private string $viewPathRoot;
     private ?string $extend;
     private array $blocks = [];
-    private \SplStack $blockNames;
-    private RouterInterface $router;
 
-    public function __construct(string $viewPathRoot, RouterInterface $router)
+    private \SplStack $blockNames;
+    /** @var Extension[] $extensions */
+    private array $extensions = [];
+
+    public function __construct(string $viewPathRoot)
     {
         $this->viewPathRoot = $viewPathRoot;
         $this->blockNames = new \SplStack();
-        $this->router = $router;
+    }
+
+    public function addExtension(Extension $extension): void
+    {
+        $this->extensions[] = $extension;
     }
 
     public function setBlockCallback(string $name, \Closure $blockCallback): void
@@ -137,8 +146,16 @@ class TemplateRenderer implements TemplateRendererInterface
         return array_key_exists($name, $this->blocks);
     }
 
-    public function path(string $pathName, array $params = []): string
+    public function __call($name, $arguments)
     {
-        return (string) $this->router->generate($pathName, $params);
+        foreach ($this->extensions as $extension) {
+            $functions = $extension->getFunctions();
+
+            if (array_key_exists($name, $functions)) {
+                return $functions[$name](...$arguments);
+            }
+        }
+
+        throw new \InvalidArgumentException('Given undifined function "' . $name . '"');
     }
 }
