@@ -30,10 +30,10 @@ psrfw-composer-update:
 	docker-compose run --rm psrfw-php-cli composer update
 
 psrfw-clear:
-	docker run --rm -v ${PWD}:/app --workdir=/app phpdockerio/php80-cli rm -f .ready
+	docker run --rm -v ${PWD}:/app --workdir=/app psrfw-php-cli rm -f .ready
 
 psrfw-ready:
-	docker run --rm -v ${PWD}:/app --workdir=/app phpdockerio/php80-cli touch .ready
+	docker run --rm -v ${PWD}:/app --workdir=/app psrfw-php-cli touch .ready
 
 psrfw-wait-db:
 	until docker-compose exec -T psrfw-postgres pg_isready --timeout=0 --dbname=app ; do sleep 1 ; done
