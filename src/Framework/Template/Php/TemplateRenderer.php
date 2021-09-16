@@ -146,13 +146,17 @@ class TemplateRenderer implements TemplateRendererInterface
         return array_key_exists($name, $this->blocks);
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, $arguments)
     {
         foreach ($this->extensions as $extension) {
             $functions = $extension->getFunctions();
 
-            if (array_key_exists($name, $functions)) {
-                return $functions[$name](...$arguments);
+            foreach ($functions as $function) {
+                if ($function->needRendering) {
+                    return ($function->callback)($this, ...$arguments);
+                }
+
+                return ($function->callback)(...$arguments);
             }
         }
 
