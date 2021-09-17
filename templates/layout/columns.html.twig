@@ -1,16 +1,12 @@
-<?php
-/** @var \Framework\Template\Php\TemplateRenderer $this */
-?>
-<?php $this->extend('layout/main'); ?>
+{% extends "layout/main.html.twig" %}
 
-<?php $this->blockBegin('content'); ?>
+{% block content %}
 
     <div class="container-fluid">
 
         <div class="row">
 
-            <?php $this->setBlockCallback('leftSidebar', function () {  ?>
-                <?php ob_start(); ?>
+            {% block leftSidebar %}
 
                 <div class="container">
                     <header
@@ -46,16 +42,13 @@
                     </header>
                 </div>
 
-                <?php return ob_get_clean(); ?>
+            {% endblock leftSidebar %}
 
-            <?php }); ?>
-
-            <?= $this->blockRender('leftSidebar'); ?>
-
-            <?= $this->blockRender('description'); ?>
+            {% block description %}
+            {% endblock description %}
 
         </div>
 
     </div>
 
-<?php $this->blockEnd(); ?>
+{% endblock content %}

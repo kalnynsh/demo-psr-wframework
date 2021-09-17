@@ -1,24 +1,17 @@
-<?php
-/** @var \Framework\Template\Php\TemplateRenderer $this */
-?>
+{% extends 'layout/main.html.twig' %}
 
-<?php $this->extend('layout/main'); ?>
+{% block title %}
+    {{ post.title }}
+{% endblock title %}
 
-<?php $this->blockBegin('title'); ?>
-    <?= $this->encode($post->title) ?>
-<?php $this->blockEnd(); ?>
-
-<?php $this->blockBegin('meta'); ?>
-
+{% block meta %}
     <meta
         name="description"
         content="<?= $this->encode($post->title) ?>"
     />
+{% endblock meta %}
 
-<?php $this->blockEnd(); ?>
-
-<?php $this->blockBegin('topNavbar'); ?>
-
+{% block topNavbar %}
     <div class="container">
         <header
             class="d-flex flex-wrap align-items-center justify-content-center
@@ -36,11 +29,11 @@
             </a>
 
             <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="<?= $this->encode($this->path('home')) ?>" class="nav-link px-2 link-secondary">Home</a></li>
-                <li><a href="<?= $this->encode($this->path('cabinet')) ?>" class="nav-link px-2 link-secondary">Cabinet</a></li>
-                <li><a href="<?= $this->encode($this->path('blog')) ?>" class="nav-link px-2 link-secondary">Blog</a></li>
-                <li><a href="#" class="nav-link px-2 link-dark active"><?= $this->encode($post->title); ?></a></li>
-                <li><a href="<?= $this->encode($this->path('about')) ?>" class="nav-link px-2 link-secondary">About</a></li>
+                <li><a href="{{path('home')}}" class="nav-link px-2 link-secondary">Home</a></li>
+                <li><a href="{{ path('cabinet') }}" class="nav-link px-2 link-secondary">Cabinet</a></li>
+                <li><a href="{{ path('blog') }}" class="nav-link px-2 link-secondary">Blog</a></li>
+                <li><a href="#" class="nav-link px-2 link-dark active">{{ post.title }}</a></li>
+                <li><a href="{{ path('about') }}" class="nav-link px-2 link-secondary">About</a></li>
             </ul>
 
             <div class="col-md-3 text-end">
@@ -49,14 +42,12 @@
             </div>
         </header>
     </div>
+{% endblock topNavbar %}
 
-<?php $this->blockEnd(); ?>
-
-<?php $this->blockBegin('content'); ?>
-
+{% block content %}
     <div class="container py-4">
 
-        <h1><?= $this->encode($post->title); ?></h1>
+        <h1>{{ post.title }}</h1>
 
         <div class="p-5 mb-2 bg-light rounded-3">
 
@@ -65,11 +56,11 @@
 
                     <div class="col-md-8">
                         <h4 class="display-7 fw-bold">
-                            <?= $post->date->format('Y-m-d') . ': ' . $this->encode($post->title); ?>
+                            {{ post.date|date('Y-m-d') }} : {{ post.title }}
                         </h4>
 
                         <p class="fs-2">
-                            <?= \nl2br($this->encode($post->content)); ?>
+                            {{ post.content|nl2br }}
                         </p>
                     </div>
 
@@ -78,5 +69,4 @@
         </div>
 
     </div>
-
-<?php $this->blockEnd(); ?>
+{% endblock content %}

@@ -1,23 +1,17 @@
-<?php
-/** @var \Framework\Template\Php\TemplateRenderer $this */
-?>
+{% extends "layout/main.html.twig" %}
 
-<?php $this->extend('layout/main'); ?>
-
-<?php $this->blockBegin('title'); ?>
+{% block title %}
     Posts
-<?php $this->blockEnd(); ?>
+{% endblock title %}
 
-<?php $this->blockBegin('meta'); ?>
-
+{% block meta %}
     <meta
         name="description"
         content="Posts page"
     />
+{% endblock meta %}
 
-<?php $this->blockEnd(); ?>
-
-<?php $this->blockBegin('topNavbar'); ?>
+{% block topNavbar %}
 
     <div class="container">
         <header
@@ -36,11 +30,11 @@
             </a>
 
             <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="<?= $this->encode($this->path('home')) ?>" class="nav-link px-2 link-secondary">Home</a></li>
-                <li><a href="<?= $this->encode($this->path('cabinet')) ?>" class="nav-link px-2 link-secondary">Cabinet</a></li>
+                <li><a href="{{ path('home') }}" class="nav-link px-2 link-secondary">Home</a></li>
+                <li><a href="{{ path('cabinet' )}}" class="nav-link px-2 link-secondary">Cabinet</a></li>
                 <li><a href="#" class="nav-link px-2 link-dark active">Blog</a></li>
                 <li><a href="#" class="nav-link px-2 link-secondary">FAQs</a></li>
-                <li><a href="<?= $this->encode($this->path('about')) ?>" class="nav-link px-2 link-secondary">About</a></li>
+                <li><a href="{{ path('about') }}" class="nav-link px-2 link-secondary">About</a></li>
             </ul>
 
             <div class="col-md-3 text-end">
@@ -50,33 +44,33 @@
         </header>
     </div>
 
-<?php $this->blockEnd(); ?>
+{% endblock topNavbar %}
 
-<?php $this->blockBegin('content'); ?>
+{% block content %}
 
 <div class="container py-4">
 
     <h1>Blog</h1>
 
-    <?php foreach ($posts as $post): ?>
+    {% for post in posts %}
 
         <div class="p-5 mb-2 bg-light rounded-3">
 
             <div class="container-fluid py-1">
-                <a href="<?= $this->encode($this->path('blog_show', ['id' => $post->id])) ?>">
+                <a href="{{ path('blog_show', {'id': post.id}) }}">
                     <h4 class="display-7 fw-bold">
-                        <?= $post->date->format('Y-m-d') . ': ' .  $this->encode($post->title); ?>
+                        {{ post.date|date('Y-m-d') }}: {{ post.title }}
                     </h4>
                 </a>
 
                 <p class="col-md-8 fs-4">
-                    <?= \nl2br($this->encode($post->content)) ?>
+                    {{ post.content|nl2br }}
                 </p>
 
             </div>
         </div>
 
-    <?php endforeach; ?>
+    {% endfor %}
 </div>
 
-<?php $this->blockEnd(); ?>
+{% endblock content %}

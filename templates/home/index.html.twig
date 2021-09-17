@@ -1,30 +1,24 @@
-<?php
-/** @var \Framework\Template\Php\TemplateRenderer $this */
-?>
-
-<?php $this->extend('layout/main'); ?>
-
-<?php $this->blockBegin('title'); ?>
+{% extends 'layout/main.html.twig' %}
+{% block title %}
     Home
-<?php $this->blockEnd(); ?>
+{% endblock title %}
 
-<?php $this->blockBegin('meta'); ?>
+{% block meta %}
+<meta
+    name="description"
+    content="Home page"
+/>
+{% endblock meta %}
 
-    <meta
-        name="description"
-        content="Home page"
-    />
-
-<?php $this->blockEnd(); ?>
-
-<?php $this->blockBegin('topNavbar'); ?>
-
+{% block topNavbar %}
     <div class="container">
         <header
             class="d-flex flex-wrap align-items-center justify-content-center
                 justify-content-md-between py-3 mb-4 border-bottom">
 
-            <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+            <a href="{{ path('home') }}>"
+                class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none"
+            >
                 <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 64 64" width="64px" height="64px">
@@ -36,23 +30,21 @@
             </a>
 
             <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="<?= $this->encode($this->path('home')) ?>" class="nav-link px-2 link-dark active ">Home</a></li>
-                <li><a href="<?= $this->encode($this->path('cabinet')) ?>" class="nav-link px-2 link-secondary">Cabinet</a></li>
-                <li><a href="<?= $this->encode($this->path('blog')) ?>" class="nav-link px-2 link-secondary">Blog</a></li>
-                <li><a href="<?= $this->encode($this->path('about')) ?>" class="nav-link px-2 link-secondary">About</a></li>
+                <li><a href="{{ path('home') }}" class="nav-link px-2 link-dark active ">Home</a></li>
+                <li><a href="{{ path('cabinet') }}" class="nav-link px-2 link-secondary">Cabinet</a></li>
+                <li><a href="{{ path('blog') }}" class="nav-link px-2 link-secondary">Blog</a></li>
+                <li><a href="{{ path('about') }}" class="nav-link px-2 link-secondary">About</a></li>
             </ul>
 
             <div class="col-md-3 text-end">
-            <button type="button" class="btn btn-outline-primary me-2">Login</button>
-            <button type="button" class="btn btn-primary">Sign-up</button>
+                <button type="button" class="btn btn-outline-primary me-2">Login</button>
+                <button type="button" class="btn btn-primary">Sign-up</button>
             </div>
         </header>
     </div>
+{% endblock topNavbar %}
 
-<?php $this->blockEnd(); ?>
-
-<?php $this->blockBegin('content'); ?>
-
+{% block content %}
 <div class="container py-4">
     <div class="h-100 p-5 mb-4 bg-light rounded-3">
 
@@ -60,11 +52,10 @@
 
             <h1 class="display-5 fw-bold">Greetings</h1>
             <p class="col-md-8 fs-4">
-                Hello, <?= htmlspecialchars($name) ?>!
+                Hello, {{ name }}!
             </p>
 
         </div>
     </div>
 </div>
-
-<?php $this->blockEnd(); ?>
+{% endblock content %}

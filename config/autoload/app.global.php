@@ -9,9 +9,9 @@ use Laminas\Diactoros\Response;
 use Aura\Router\RouterContainer;
 use App\Repository\Post\PostRepository;
 
-use Framework\Template\Php\TemplateRenderer;
 use App\DataGenerator\Post\PostGenerator;
 
+use Framework\Template\Twig\TwigRenderer;
 use Interop\Container\ContainerInterface;
 use Framework\Http\Router\RouterInterface;
 use Framework\Http\Router\AuraRouterAdapter;
@@ -23,9 +23,9 @@ use Framework\Http\Middleware\DispatcherMiddleware;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Stratigility\Middleware\NotFoundHandler;
 use App\Http\Middleware\BasicAuthMiddlewarePathFactory;
-use Framework\Template\Php\Extension\RouteExtension;
 use Laminas\Stratigility\Middleware\ErrorResponseGenerator;
 use Laminas\Stratigility\Middleware\PathMiddlewareDecorator;
+use Framework\Template\Twig\Extension\CustomRoutingExtension;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 
 return [
@@ -106,22 +106,50 @@ return [
 
             PathMiddlewareDecorator::class => BasicAuthMiddlewarePathFactory::class,
 
-            RouteExtension::class =>
+            CustomRoutingExtension::class =>
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
 
-                return new RouteExtension(
+                return new CustomRoutingExtension(
                     $container->get(RouterInterface::class)
                 );
             },
 
+            \Twig\Environment::class =>
+            function (ContainerInterface $container, $requestedName, ?array $options = null) {
+                $templateDir = dirname(__DIR__, 2) . '/templates';
+                $cacheDir = dirname(__DIR__, 2) . '/var/cache/twig';
+                $debug = $container->get('config')['debug'];
+
+                $loader = new \Twig\Loader\FilesystemLoader();
+                $loader->addPath($templateDir);
+
+                $environment = new \Twig\Environment(
+                    $loader,
+                    [
+                        'cache' => $debug ? false : $cacheDir,
+                        'debug' => $debug,
+                        'strict_variables' => $debug,
+                        'auto_reload' => $debug,
+                    ]
+                );
+
+                if ($debug) {
+                    $environment->addExtension(new \Twig\Extension\DebugExtension());
+                }
+
+                $environment->addExtension(
+                    $container->get(CustomRoutingExtension::class)
+                );
+
+                return $environment;
+            },
+
             TemplateRendererInterface::class =>
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
-                $viewPathRoot = dirname(__DIR__, 2) . '/templates';
-
-                $renderer = new TemplateRenderer($viewPathRoot);
-                $renderer->addExtension($container->get(RouteExtension::class));
-
-                return $renderer;
+                return new TwigRenderer(
+                    $container->get(\Twig\Environment::class),
+                    '.html.twig'
+                );
             },
 
             Home\IndexAction::class =>
