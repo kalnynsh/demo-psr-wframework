@@ -1,20 +1,22 @@
 <?php
 
-namespace Test\Framework\Http\Pipeline;
+namespace Test\Framework\Http\Middleware;
 
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class DummyMiddleware implements MiddlewareInterface
+class MiddlewareTwo implements MiddlewareInterface
 {
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        $response = $handler->handle($request);
 
-        return $response->withHeader('X-Dummy', 'dummy');
+        return new JsonResponse([
+            'middleware-two' => 2,
+        ]);
     }
 }

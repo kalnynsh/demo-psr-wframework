@@ -21,5 +21,5 @@ class Psr15Middleware implements MiddlewareInterface
 
         return (new HtmlResponse('I am the HTML response'))
             ->withHeader('X-Header', $valueOfHeaderAttribute);
-    }    
+    }
 }

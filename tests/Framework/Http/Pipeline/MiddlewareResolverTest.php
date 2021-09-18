@@ -19,7 +19,7 @@ class MiddlewareResolverTest extends TestCase
 
     /**
      * @dataProvider getValidHandlers
-     * 
+     *
      * @param class-string<MiddlewareInterface>|MiddlewareInterface $givenMiddleware
      */
     public function testDirect($givenMiddleware): void
@@ -43,7 +43,7 @@ class MiddlewareResolverTest extends TestCase
 
     /**
      * @dataProvider getValidHandlers
-     * 
+     *
      * @param class-string<MiddlewareInterface>|MiddlewareInterface $givenMiddleware
      */
     public function testNext($givenMiddleware): void

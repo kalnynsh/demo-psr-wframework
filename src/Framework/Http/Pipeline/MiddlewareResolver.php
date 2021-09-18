@@ -25,13 +25,12 @@ class MiddlewareResolver
      * @param string|T $handler
      * @throws UnknownMiddlewareTypeException
      *
-     * @return T
+     * @return MiddlewareInterface|RequestHandlerInterface
      */
     public function resolve($handler): MiddlewareInterface|RequestHandlerInterface
     {
         /** @var class-string<MiddlewareInterface>|MiddlewareInterface|RequestHandlerInterface $handler */
-        if (
-            \is_string($handler)
+        if (\is_string($handler)
             && $this->container->has($handler)
         ) {
             /** @var MiddlewareInterface */

@@ -4,19 +4,19 @@ use App\Http\Action;
 
 /** @var Framework\Http\Application $app */
 
-$app->addGetRoute('home', '/', Action\Home\IndexAction::class);
+$app->get('home', '/', Action\Home\IndexAction::class);
 
-$app->addGetRoute('about', '/about', Action\Home\AboutAction::class);
+$app->get('about', '/about', Action\Home\AboutAction::class);
 
-$app->addGetRoute(
+$app->get(
     'cabinet',
     '/cabinet',
     Action\Home\CabinetAction::class
 );
 
-$app->addGetRoute('blog', '/blog', Action\Blog\IndexAction::class);
+$app->get('blog', '/blog', Action\Blog\IndexAction::class);
 
-$app->addGetRoute(
+$app->get(
     'blog_show',
     '/blog/{id}',
     Action\Blog\ShowAction::class,

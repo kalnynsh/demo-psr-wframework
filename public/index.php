@@ -18,7 +18,7 @@ $container = require 'config' . DIRECTORY_SEPARATOR . 'container.php';
 
 $app = $container->get(Application::class);
 
-// Pipe app with middleware
+// Pipe app with middlewares
 require 'config' . DIRECTORY_SEPARATOR . 'pipeline.php';
 
 // Add routes to app
@@ -26,7 +26,7 @@ require 'config' . DIRECTORY_SEPARATOR . 'routes.php';
 
 $request = ServerRequestFactory::fromGlobals();
 
-$response = $app->run($request);
+$response = $app->handle($request);
 
 $emmiter = new SapiEmitter();
 $emmiter->emit($response);
