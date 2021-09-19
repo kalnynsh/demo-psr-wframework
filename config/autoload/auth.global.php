@@ -2,6 +2,7 @@
 
 use Interop\Container\ContainerInterface;
 use App\Http\Middleware\BasicAuthMiddleware;
+use Laminas\Diactoros\Response;
 
 return [
     'dependencies' => [
@@ -10,7 +11,8 @@ return [
             function (ContainerInterface $container, $requestedName, ?array $options = null) {
 
                 return new BasicAuthMiddleware(
-                    $container->get('config')['auth']['users']
+                    $container->get('config')['auth']['users'],
+                    new Response()
                 );
             },
         ]

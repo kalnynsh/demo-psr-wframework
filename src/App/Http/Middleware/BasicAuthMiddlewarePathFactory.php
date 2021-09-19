@@ -11,8 +11,7 @@ class BasicAuthMiddlewarePathFactory
     public function __invoke(
         ContainerInterface $container,
         string $requestedName
-    ): object
-    {
+    ): object {
         /** @var BasicAuthMiddleware $basicAuthMiddleware */
         $basicAuthMiddleware = $container->get(BasicAuthMiddleware::class);
         $path = '/cabinet';

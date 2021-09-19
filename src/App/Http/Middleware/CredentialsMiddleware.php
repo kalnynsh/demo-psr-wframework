@@ -13,8 +13,7 @@ class CredentialsMiddleware implements MiddlewareInterface
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         $response = $handler->handle($request);
 
         return $response

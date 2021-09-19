@@ -1,14 +1,6 @@
 {% extends 'layout/main.html.twig' %}
-{% block title %}
-    Home
-{% endblock title %}
 
-{% block meta %}
-<meta
-    name="description"
-    content="Home page"
-/>
-{% endblock meta %}
+{% block title %}Error debug{% endblock %}
 
 {% block topNavbar %}
     <div class="container">
@@ -30,7 +22,7 @@
             </a>
 
             <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="{{ path('home') }}" class="nav-link px-2 link-dark active">Home</a></li>
+                <li><a href="{{ path('home') }}" class="nav-link px-2 link-secondary">Home</a></li>
                 <li><a href="{{ path('cabinet') }}" class="nav-link px-2 link-secondary">Cabinet</a></li>
                 <li><a href="{{ path('blog') }}" class="nav-link px-2 link-secondary">Blog</a></li>
                 <li><a href="{{ path('about') }}" class="nav-link px-2 link-secondary">About</a></li>
@@ -43,19 +35,12 @@
         </header>
     </div>
 {% endblock topNavbar %}
-
 {% block content %}
-<div class="container py-4">
-    <div class="h-100 p-5 mb-4 bg-light rounded-3">
+    <h1>Exception: {{ exception.getMessage() }}</h1>
 
-        <div class="container-fluid py-5">
-
-            <h1 class="display-5 fw-bold">Greetings</h1>
-            <p class="col-md-8 fs-4">
-                Hello, {{ name }}!
-            </p>
-
-        </div>
-    </div>
-</div>
-{% endblock content %}
+    <p>Code: {{ exception.getCode() }}</p>
+    <p>{{ exception.getFile() }} on line {{ exception.getLine() }}</p>
+    {% for trace in exception.getTrace() %}
+        <p>{{ trace['file'] }} on line {{ trace['line'] }}</p>
+    {% endfor %}
+{% endblock %}
