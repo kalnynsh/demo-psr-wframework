@@ -2,7 +2,6 @@
 
 namespace Test\Framework\Http\Middleware;
 
-use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,8 +14,6 @@ class MiddlewareTwo implements MiddlewareInterface
         RequestHandlerInterface $handler
     ): ResponseInterface {
 
-        return new JsonResponse([
-            'middleware-two' => 2,
-        ]);
+        return $handler->handle($request->withAttribute('middleware-two', 2));
     }
 }

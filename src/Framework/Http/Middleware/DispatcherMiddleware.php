@@ -21,8 +21,7 @@ class DispatcherMiddleware implements MiddlewareInterface
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
 
         /** @var Result $result */
         if (! $result = $request->getAttribute(Result::class)) {
@@ -32,9 +31,9 @@ class DispatcherMiddleware implements MiddlewareInterface
         /** @psalm-var class-string<RequestHandlerInterface> $handlerClass */
         $handlerClass = $result->getHandler();
 
-        /** @var RequestHandlerInterface $routerHandler */
-        $routerHandler = $this->resolver->resolve($handlerClass);
+        /** @var RequestHandlerInterface $routeHandler */
+        $routeHandler = $this->resolver->resolve($handlerClass);
 
-        return $routerHandler->handle($request);
+        return $routeHandler->handle($request);
     }
 }
