@@ -49,8 +49,22 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
                             'exception' => $exception,
                         ]
                     ),
-                $exception->getCode() ?: 500
+                self::getStatusCode($exception)
             );
         }
+    }
+
+    private static function getStatusCode(\Throwable $exception): int
+    {
+        /**
+         * @var positive-int $code
+         */
+        (int) $code = $exception->getCode();
+
+        if ($code >= 400 && $code < 600) {
+            return $code;
+        }
+
+        return 500;
     }
 }
