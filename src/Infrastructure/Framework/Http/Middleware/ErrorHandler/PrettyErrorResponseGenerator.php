@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Middleware\ErrorHandler;
+namespace Infrastructure\Framework\Http\Middleware\ErrorHandler;
 
 use Laminas\Stratigility\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Framework\Template\TemplateRendererInterface;
+use Framework\Http\Middleware\ErrorHandler\ErrorResponseGeneratorInterface;
 
 class PrettyErrorResponseGenerator implements ErrorResponseGeneratorInterface
 {

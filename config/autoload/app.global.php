@@ -5,29 +5,31 @@ use App\Http\Action\Blog;
 use App\Http\Action\Home;
 
 use Framework\Http\Application;
+
 use Laminas\Diactoros\Response;
 use Aura\Router\RouterContainer;
+use Psr\Container\ContainerInterface;
 use App\Repository\Post\PostRepository;
 
 use App\DataGenerator\Post\PostGenerator;
 
-use Interop\Container\ContainerInterface;
 use Framework\Http\Router\RouterInterface;
+
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Middleware\RouteMiddleware;
+use Whoops\RunInterface as WhoopsRunInterface;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Template\TemplateRendererInterface;
 use Framework\Http\Middleware\DispatcherMiddleware;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Stratigility\Middleware\NotFoundHandler;
 use App\Http\Middleware\BasicAuthMiddlewarePathFactory;
-use App\Http\Middleware\ErrorHandler\ErrorHandlerMiddleware;
-use App\Http\Middleware\ErrorHandler\ErrorResponseGeneratorInterface;
-use App\Http\Middleware\ErrorHandler\PrettyErrorResponseGenerator;
-use App\Http\Middleware\ErrorHandler\WhoopsErrorResponseGenerator;
 use Laminas\Stratigility\Middleware\PathMiddlewareDecorator;
+use Framework\Http\Middleware\ErrorHandler\ErrorHandlerMiddleware;
+use Framework\Http\Middleware\ErrorHandler\WhoopsErrorResponseGenerator;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
-use Whoops\RunInterface as WhoopsRunInterface;
+use Framework\Http\Middleware\ErrorHandler\ErrorResponseGeneratorInterface;
+use Infrastructure\Framework\Http\Middleware\ErrorHandler\PrettyErrorResponseGenerator;
 
 return [
     'dependencies' => [
@@ -70,8 +72,8 @@ return [
                     $container->get(TemplateRendererInterface::class),
                     new Response(),
                     [
-                        '403' => 'error/403',
-                        '404' => 'error/404',
+                        '403'   => 'error/403',
+                        '404'   => 'error/404',
                         'error' => 'error/error',
                     ]
                 );
