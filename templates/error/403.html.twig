@@ -1,6 +1,6 @@
 {% extends 'layout/main.html.twig' %}
 
-{% block title %}Error debug{% endblock %}
+{% block title %}403 - Forbidden{% endblock %}
 
 {% block topNavbar %}
     <div class="container">
@@ -36,11 +36,5 @@
     </div>
 {% endblock topNavbar %}
 {% block content %}
-    <h1>Exception: {{ exception.getMessage() }}</h1>
-
-    <p>Code: {{ exception.getCode() }}</p>
-    <p>{{ exception.getFile() }} on line {{ exception.getLine() }}</p>
-    {% for trace in exception.getTrace() %}
-        <p>{{ trace['file'] }} on line {{ trace['line'] }}</p>
-    {% endfor %}
+    <h1>403 - Forbidden</h1>
 {% endblock %}
