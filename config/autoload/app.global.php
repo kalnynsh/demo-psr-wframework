@@ -62,21 +62,10 @@ return [
             ErrorResponseGeneratorInterface::class =>
             function (ContainerInterface $container, string $requestedName, ?array $options = null) {
                 if ($container->get('config')['debug']) {
-                    return new WhoopsErrorResponseGenerator(
-                        $container->get(WhoopsRunInterface::class),
-                        new Response()
-                    );
+                    return $container->get(WhoopsErrorResponseGenerator::class);
                 }
 
-                return new PrettyErrorResponseGenerator(
-                    $container->get(TemplateRendererInterface::class),
-                    new Response(),
-                    [
-                        '403'   => 'error/403',
-                        '404'   => 'error/404',
-                        'error' => 'error/error',
-                    ]
-                );
+                return $container->get(PrettyErrorResponseGenerator::class);
             },
 
             WhoopsRunInterface::class =>
@@ -92,6 +81,26 @@ return [
                 return $whoops;
             },
 
+            WhoopsErrorResponseGenerator::class =>
+            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
+                return new WhoopsErrorResponseGenerator(
+                    $container->get(WhoopsRunInterface::class),
+                    $container->get(Response::class)
+                );
+            },
+
+            PrettyErrorResponseGenerator::class =>
+            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
+                return new PrettyErrorResponseGenerator(
+                    $container->get(TemplateRendererInterface::class),
+                    $container->get(Response::class),
+                    [
+                        '403'   => 'error/403',
+                        '404'   => 'error/404',
+                        'error' => 'error/error',
+                    ]
+                );
+            },
 
             DispatcherMiddleware::class =>
             function (ContainerInterface $container, string $requestedName, ?array $options = null) {
