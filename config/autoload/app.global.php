@@ -57,7 +57,8 @@ return [
             ErrorHandlerMiddleware::class =>
             function (ContainerInterface $container, string $requestedName, ?array $options = null) {
                 return new ErrorHandlerMiddleware(
-                    $container->get(ErrorResponseGeneratorInterface::class)
+                    $container->get(ErrorResponseGeneratorInterface::class),
+                    $container->get(LoggerInterface::class)
                 );
             },
 
