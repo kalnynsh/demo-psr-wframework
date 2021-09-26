@@ -7,6 +7,8 @@ use Laminas\Stratigility\Middleware\PathMiddlewareDecorator;
 
 $app->pipe(\Framework\Http\Middleware\ErrorHandler\ErrorHandlerMiddleware::class);
 
+$app->pipe(\Infrastructure\Framework\Http\Middleware\ResponseLoggerMiddleware::class);
+
 $app->pipe(\App\Http\Middleware\ProfilerMiddleware::class);
 
 $app->pipe(\App\Http\Middleware\CredentialsMiddleware::class);

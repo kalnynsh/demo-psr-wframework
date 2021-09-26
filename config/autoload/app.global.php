@@ -30,6 +30,8 @@ use Framework\Http\Middleware\ErrorHandler\WhoopsErrorResponseGenerator;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Framework\Http\Middleware\ErrorHandler\ErrorResponseGeneratorInterface;
 use Infrastructure\Framework\Http\Middleware\ErrorHandler\PrettyErrorResponseGenerator;
+use Infrastructure\Framework\Http\Middleware\ResponseLoggerMiddleware;
+use Psr\Log\LoggerInterface;
 
 return [
     'dependencies' => [
@@ -99,6 +101,30 @@ return [
                         '404'   => 'error/404',
                         'error' => 'error/error',
                     ]
+                );
+            },
+
+            LoggerInterface::class =>
+            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
+                /** @var \Monolog\Logger $logger */
+                $logger = new \Monolog\Logger('App');
+
+                $level = $container->get('config')['debug'] ? \Monolog\Logger::DEBUG : \Monolog\Logger::WARNING;
+
+                $streamFile = dirname(__DIR__, 2) . '/var/logs/runtime/application.log';
+
+                $logger->pushHandler(new \Monolog\Handler\StreamHandler(
+                    $streamFile,
+                    $level
+                ));
+
+                return $logger;
+            },
+
+            ResponseLoggerMiddleware::class =>
+            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
+                return new ResponseLoggerMiddleware(
+                    $container->get(LoggerInterface::class)
                 );
             },
 
