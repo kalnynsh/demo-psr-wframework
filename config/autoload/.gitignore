@@ -1,3 +1,5 @@
 *.local.php
 
+!*.local.php.dist
+
 local.php

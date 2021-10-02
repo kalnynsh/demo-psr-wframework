@@ -34,6 +34,8 @@
     },
     "scripts": {
         "serve": "php -S 127.0.0.2:8900 -t public public/index.php",
-        "test": "phpunit --colors=always"
+        "test": "phpunit --colors=always",
+        "development-enable": "cp config/autoload/development.local.php.dist config/autoload/development.local.php",
+        "development-disable": "rm config/autoload/development.local.php"
     }
 }

@@ -4,20 +4,20 @@ use App\Http\Middleware;
 use App\Http\Action\Blog;
 use App\Http\Action\Home;
 
-use Framework\Http\Application;
+use Psr\Log\LoggerInterface;
 
+use Framework\Http\Application;
 use Laminas\Diactoros\Response;
 use Aura\Router\RouterContainer;
 use Psr\Container\ContainerInterface;
+
 use App\Repository\Post\PostRepository;
 
 use App\DataGenerator\Post\PostGenerator;
 
 use Framework\Http\Router\RouterInterface;
-
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Middleware\RouteMiddleware;
-use Whoops\RunInterface as WhoopsRunInterface;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Template\TemplateRendererInterface;
 use Framework\Http\Middleware\DispatcherMiddleware;
@@ -26,13 +26,11 @@ use Laminas\Stratigility\Middleware\NotFoundHandler;
 use App\Http\Middleware\BasicAuthMiddlewarePathFactory;
 use Laminas\Stratigility\Middleware\PathMiddlewareDecorator;
 use Framework\Http\Middleware\ErrorHandler\ErrorHandlerMiddleware;
-use Framework\Http\Middleware\ErrorHandler\WhoopsErrorResponseGenerator;
+use Infrastructure\Framework\Http\Middleware\ResponseLoggerMiddleware;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Framework\Http\Middleware\ErrorHandler\ErrorResponseGeneratorInterface;
 use Infrastructure\Framework\Http\Middleware\ErrorHandler\Listener\LogErrorListener;
 use Infrastructure\Framework\Http\Middleware\ErrorHandler\PrettyErrorResponseGenerator;
-use Infrastructure\Framework\Http\Middleware\ResponseLoggerMiddleware;
-use Psr\Log\LoggerInterface;
 
 return [
     'dependencies' => [
@@ -75,32 +73,7 @@ return [
 
             ErrorResponseGeneratorInterface::class =>
             function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                if ($container->get('config')['debug']) {
-                    return $container->get(WhoopsErrorResponseGenerator::class);
-                }
-
                 return $container->get(PrettyErrorResponseGenerator::class);
-            },
-
-            WhoopsRunInterface::class =>
-            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                $whoops = new \Whoops\Run();
-
-                $whoops->writeToOutput(false);
-                $whoops->allowQuit(false);
-                $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
-
-                $whoops->register();
-
-                return $whoops;
-            },
-
-            WhoopsErrorResponseGenerator::class =>
-            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                return new WhoopsErrorResponseGenerator(
-                    $container->get(WhoopsRunInterface::class),
-                    $container->get(Response::class)
-                );
             },
 
             PrettyErrorResponseGenerator::class =>

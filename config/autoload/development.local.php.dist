@@ -1,0 +1,42 @@
+<?php
+
+use Laminas\Diactoros\Response;
+use Psr\Container\ContainerInterface;
+use Framework\Http\Middleware\ErrorHandler\WhoopsErrorResponseGenerator;
+use Framework\Http\Middleware\ErrorHandler\ErrorResponseGeneratorInterface;
+
+return [
+    'dependencies' => [
+
+        'factories' => [
+            ErrorResponseGeneratorInterface::class =>
+            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
+                return $container->get(WhoopsErrorResponseGenerator::class);
+            },
+
+           \Whoops\RunInterface::class =>
+            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
+                $whoops = new \Whoops\Run();
+
+                $whoops->writeToOutput(false);
+                $whoops->allowQuit(false);
+                $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
+
+                $whoops->register();
+
+                return $whoops;
+            },
+
+            WhoopsErrorResponseGenerator::class =>
+            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
+                return new WhoopsErrorResponseGenerator(
+                    $container->get(\Whoops\RunInterface::class),
+                    $container->get(Response::class)
+                );
+            },
+        ],
+
+    ],
+
+    'debug' => true,
+];

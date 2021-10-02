@@ -1,7 +1,7 @@
 up: docker-up
 down: docker-down
 restart: docker-down docker-up
-init: docker-down-clear psrfw-clear docker-pull docker-build docker-up psrfw-init rights
+init: docker-down-clear psrfw-clear docker-pull docker-build psrfw-composer-dev-enable psrfw-ready docker-up psrfw-init rights
 rights: psrfw-cli-rightes psrfw-fpm-rightes
 
 test: psrfw-cli-composer-test
@@ -46,3 +46,9 @@ psrfw-fpm-rightes:
 
 psrfw-cli-composer-test:
 	docker-compose run --rm psrfw-php-cli composer test
+
+psrfw-composer-dev-enable:
+	docker-compose run --rm psrfw-php-cli composer development-enable
+
+psrfw-composer-dev-disable:
+	docker-compose run --rm psrfw-php-cli composer development-disable
