@@ -7,19 +7,17 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Framework\Http\Middleware\ErrorHandler\ErrorResponseGeneratorInterface;
-use Psr\Log\LoggerInterface;
 
 class ErrorHandlerMiddleware implements MiddlewareInterface
 {
+    /** @var callable[] $listeners */
+    private array $listeners = [];
     private ErrorResponseGeneratorInterface $responseGenerator;
-    private LoggerInterface $logger;
 
     public function __construct(
         ErrorResponseGeneratorInterface $responseGenerator,
-        LoggerInterface $logger
     ) {
         $this->responseGenerator = $responseGenerator;
-        $this->logger = $logger;
     }
 
     public function process(
@@ -29,29 +27,16 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
         try {
             return $handler->handle($request);
         } catch (\Throwable $exception) {
-            $this
-                ->logger
-                ->error(
-                    $exception->getMessage(),
-                    [
-                        'exception' => $exception,
-                        'request' => self::extractRequest($request),
-                    ]
-                );
-
+            foreach ($this->listeners as $listener) {
+                $listener($exception, $request);
+            }
 
             return $this->responseGenerator->generate($exception, $request);
         }
     }
 
-    private static function extractRequest(ServerRequestInterface $request): array
+    public function addListener(callable $listener): void
     {
-        return [
-            'method'  => $request->getMethod(),
-            'url'     => (string) $request->getUri(),
-            'server'  => $request->getServerParams(),
-            'cookies' => $request->getCookieParams(),
-            'body'    => $request->getParsedBody(),
-        ];
+        $this->listeners[] = $listener;
     }
 }

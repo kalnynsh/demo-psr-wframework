@@ -11,29 +11,10 @@ use Test\Framework\Http\Middleware\ErrorHandler\Handler\CorrectAction;
 
 class ErrorHandlerTest extends TestCase
 {
-    /** @var \PHPUnit\Framework\MockObject\MockObject|LoggerInterface $logger  */
-    private $middleware;
-
-    protected function setUp():void
-    {
-        parent::setUp();
-
-        /**
-         * @var \PHPUnit\Framework\MockObject\MockObject|LoggerInterface $logger
-         */
-        $logger = $this->createMock(LoggerInterface::class);
-
-        $logger
-            ->expects($this->any())
-            ->method('error')
-            ->willReturn(null);
-
-        $this->middleware = new ErrorHandlerMiddleware(new DummyGenerator(), $logger);
-    }
-
     public function testNothingDone(): void
     {
-        $response = $this->middleware->process(new ServerRequest(), new CorrectAction());
+        $middleware = new ErrorHandlerMiddleware(new DummyGenerator());
+        $response = $middleware->process(new ServerRequest(), new CorrectAction());
 
         self::assertEquals('Correct', $response->getBody()->getContents());
         self::assertEquals(200, $response->getStatusCode());
@@ -41,7 +22,8 @@ class ErrorHandlerTest extends TestCase
 
     public function testException(): void
     {
-        $response = $this->middleware->process(new ServerRequest(), new ErrorAction());
+        $middleware = new ErrorHandlerMiddleware(new DummyGenerator());
+        $response = $middleware->process(new ServerRequest(), new ErrorAction());
 
         self::assertEquals('Runtime error', $response->getBody()->getContents());
         self::assertEquals(500, $response->getStatusCode());

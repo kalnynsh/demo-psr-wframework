@@ -29,6 +29,7 @@ use Framework\Http\Middleware\ErrorHandler\ErrorHandlerMiddleware;
 use Framework\Http\Middleware\ErrorHandler\WhoopsErrorResponseGenerator;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Framework\Http\Middleware\ErrorHandler\ErrorResponseGeneratorInterface;
+use Infrastructure\Framework\Http\Middleware\ErrorHandler\Listener\LogErrorListener;
 use Infrastructure\Framework\Http\Middleware\ErrorHandler\PrettyErrorResponseGenerator;
 use Infrastructure\Framework\Http\Middleware\ResponseLoggerMiddleware;
 use Psr\Log\LoggerInterface;
@@ -56,8 +57,18 @@ return [
 
             ErrorHandlerMiddleware::class =>
             function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                return new ErrorHandlerMiddleware(
+                $middleware = new ErrorHandlerMiddleware(
                     $container->get(ErrorResponseGeneratorInterface::class),
+                );
+
+                $middleware->addListener($container->get(LogErrorListener::class));
+
+                return $middleware;
+            },
+
+            LogErrorListener::class =>
+            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
+                return new LogErrorListener(
                     $container->get(LoggerInterface::class)
                 );
             },
