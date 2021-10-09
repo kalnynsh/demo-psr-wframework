@@ -34,6 +34,12 @@
     },
     "scripts": {
         "serve": "php -S 127.0.0.2:8900 -t public public/index.php",
+        "check": [
+            "@cs-check",
+            "@cs-fix"
+        ],
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
         "test": "phpunit --colors=always",
         "development-enable": "ln -sr config/autoload/development.local.php.dist config/autoload/development.local.php",
         "development-disable": "rm config/autoload/development.local.php"
