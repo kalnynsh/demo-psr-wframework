@@ -16,20 +16,19 @@ use App\Repository\Post\PostRepository;
 use App\DataGenerator\Post\PostGenerator;
 
 use Framework\Http\Router\RouterInterface;
-use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Middleware\RouteMiddleware;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Template\TemplateRendererInterface;
 use Framework\Http\Middleware\DispatcherMiddleware;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Stratigility\Middleware\NotFoundHandler;
-use App\Http\Middleware\BasicAuthMiddlewarePathFactory;
 use Laminas\Stratigility\Middleware\PathMiddlewareDecorator;
 use Framework\Http\Middleware\ErrorHandler\ErrorHandlerMiddleware;
-use Infrastructure\Framework\Http\Middleware\ResponseLoggerMiddleware;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Framework\Http\Middleware\ErrorHandler\ErrorResponseGeneratorInterface;
+use Infrastructure\Framework\Http\Middleware\Response\ResponseLoggerMiddleware;
 use Infrastructure\Framework\Http\Middleware\ErrorHandler\Listener\LogErrorListener;
+use Infrastructure\Framework\Http\Middleware\BasicAuth\BasicAuthMiddlewarePathFactory;
 use Infrastructure\Framework\Http\Middleware\ErrorHandler\PrettyErrorResponseGenerator;
 
 return [
@@ -45,106 +44,37 @@ return [
             Middleware\CredentialsMiddleware::class => InvokableFactory::class,
             PostGenerator::class => InvokableFactory::class,
 
-            Application::class =>
-            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                return new Application(
-                    $container->get(MiddlewareResolver::class),
-                    $container->get(RouterInterface::class)
-                );
-            },
+            Application::class => Infrastructure\Framework\Http\Application\ApplicationFactory::class,
 
             ErrorHandlerMiddleware::class =>
-            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                $middleware = new ErrorHandlerMiddleware(
-                    $container->get(ErrorResponseGeneratorInterface::class),
-                );
-
-                $middleware->addListener($container->get(LogErrorListener::class));
-
-                return $middleware;
-            },
+                \Infrastructure\Framework\Http\Middleware\ErrorHandler\ErrorHandlerMiddlewareFactory::class,
 
             LogErrorListener::class =>
-            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                return new LogErrorListener(
-                    $container->get(LoggerInterface::class)
-                );
-            },
+                \Infrastructure\Framework\Http\Middleware\ErrorHandler\Listener\LogErrorListenerFactory::class,
 
             ErrorResponseGeneratorInterface::class =>
-            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                return $container->get(PrettyErrorResponseGenerator::class);
-            },
+                \Infrastructure\Framework\Http\Middleware\ErrorHandler\PrettyErrorResponseGeneratorFactory::class,
 
             PrettyErrorResponseGenerator::class =>
-            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                return new PrettyErrorResponseGenerator(
-                    $container->get(TemplateRendererInterface::class),
-                    $container->get(Response::class),
-                    [
-                        '403'   => 'error/403',
-                        '404'   => 'error/404',
-                        'error' => 'error/error',
-                    ]
-                );
-            },
+                \Infrastructure\Framework\Http\Middleware\ErrorHandler\PrettyErrorResponseGeneratorFactory::class,
 
             LoggerInterface::class =>
-            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                /** @var \Monolog\Logger $logger */
-                $logger = new \Monolog\Logger('App');
-
-                $level = $container->get('config')['debug'] ? \Monolog\Logger::DEBUG : \Monolog\Logger::WARNING;
-
-                $streamFile = dirname(__DIR__, 2) . '/var/logs/runtime/application.log';
-
-                $logger->pushHandler(new \Monolog\Handler\StreamHandler(
-                    $streamFile,
-                    $level
-                ));
-
-                return $logger;
-            },
+                \Infrastructure\Framework\Http\Logger\MonologLoggerFactory::class,
 
             ResponseLoggerMiddleware::class =>
-            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                return new ResponseLoggerMiddleware(
-                    $container->get(LoggerInterface::class)
-                );
-            },
+                \Infrastructure\Framework\Http\Middleware\Response\ResponseLoggerMiddlewareFactory::class,
 
             DispatcherMiddleware::class =>
-            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                return new DispatcherMiddleware(
-                    $container->get(MiddlewareResolver::class)
-                );
-            },
+                \Infrastructure\Framework\Http\Middleware\Dispatcher\DispatcherMiddlewareFactory::class,
 
-            RouterContainer::class =>
-            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                return new RouterContainer();
-            },
+            RouterContainer::class => InvokableFactory::class,
 
-            RouterInterface::class =>
-            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                /** @var RouterContainer $dependency */
-                $dependency = $container->get(RouterContainer::class);
+            RouterInterface::class => \Infrastructure\Framework\Http\Router\AuraRouterAdapterFactory::class,
 
-                return new AuraRouterAdapter($dependency);
-            },
-
-            RouteMiddleware::class =>
-            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                /** @var RouterInterface $router */
-                $router = $container->get(RouterInterface::class);
-
-                return new RouteMiddleware($router);
-            },
+            RouteMiddleware::class => \Infrastructure\Framework\Http\Middleware\Route\RouteMiddlewareFactory::class,
 
             MiddlewareResolver::class =>
-            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                    return new MiddlewareResolver($container);
-            },
+                \Infrastructure\Framework\Http\Middleware\Resolver\MiddlewareResolverFactory::class,
 
             PathMiddlewareDecorator::class => BasicAuthMiddlewarePathFactory::class,
 

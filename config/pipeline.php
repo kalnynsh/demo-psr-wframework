@@ -2,12 +2,13 @@
 
 use Laminas\Stratigility\Middleware\NotFoundHandler;
 use Laminas\Stratigility\Middleware\PathMiddlewareDecorator;
+use Infrastructure\Framework\Http\Middleware\Response\ResponseLoggerMiddleware;
 
 /** @var Framework\Http\Application $app */
 
 $app->pipe(\Framework\Http\Middleware\ErrorHandler\ErrorHandlerMiddleware::class);
 
-$app->pipe(\Infrastructure\Framework\Http\Middleware\ResponseLoggerMiddleware::class);
+$app->pipe(ResponseLoggerMiddleware::class);
 
 $app->pipe(\App\Http\Middleware\ProfilerMiddleware::class);
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace Infrastructure\Framework\Http\Middleware\BasicAuth;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use App\Http\Middleware\BasicAuthMiddleware;
 use Laminas\Stratigility\Middleware\PathMiddlewareDecorator;
 
@@ -10,7 +10,8 @@ class BasicAuthMiddlewarePathFactory
 {
     public function __invoke(
         ContainerInterface $container,
-        string $requestedName
+        string $requestedName,
+        ?array $options = null
     ): object {
         /** @var BasicAuthMiddleware $basicAuthMiddleware */
         $basicAuthMiddleware = $container->get(BasicAuthMiddleware::class);

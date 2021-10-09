@@ -1,20 +1,13 @@
 <?php
 
-use Interop\Container\ContainerInterface;
 use App\Http\Middleware\BasicAuthMiddleware;
-use Laminas\Diactoros\Response;
+use Infrastructure\Framework\Http\Middleware\BasicAuth\BasicAuthMiddlewareFactory;
 
 return [
     'dependencies' => [
         'factories' => [
             BasicAuthMiddleware::class =>
-            function (ContainerInterface $container, $requestedName, ?array $options = null) {
-
-                return new BasicAuthMiddleware(
-                    $container->get('config')['auth']['users'],
-                    new Response()
-                );
-            },
+                BasicAuthMiddlewareFactory::class,
         ]
     ],
 
