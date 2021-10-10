@@ -15,6 +15,7 @@ use App\Repository\Post\PostRepository;
 
 use App\DataGenerator\Post\PostGenerator;
 
+use App\Console\Command\CacheClearCommand;
 use Framework\Http\Router\RouterInterface;
 use Framework\Http\Middleware\RouteMiddleware;
 use Framework\Http\Pipeline\MiddlewareResolver;
@@ -42,7 +43,9 @@ return [
             Response::class => InvokableFactory::class,
             Middleware\ProfilerMiddleware::class => InvokableFactory::class,
             Middleware\CredentialsMiddleware::class => InvokableFactory::class,
+
             PostGenerator::class => InvokableFactory::class,
+            CacheClearCommand::class => InvokableFactory::class,
 
             Application::class => Infrastructure\Framework\Http\Application\ApplicationFactory::class,
 
