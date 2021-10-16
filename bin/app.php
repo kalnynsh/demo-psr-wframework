@@ -12,11 +12,7 @@ require 'vendor/autoload.php';
 $container = require 'config/container.php';
 
 $commands = [
-    [
-        'name' => 'cache:clear',
-        'command' => CacheClearCommand::class,
-        'description' => 'Clear cache',
-    ],
+    $container->get(CacheClearCommand::class),
 ];
 
 $input = new Input($argv);
@@ -24,12 +20,10 @@ $output = new Output();
 $name = $input->getArgument(0);
 
 if (! empty($name)) {
-    foreach ($commands as $definition) {
-        if ($definition['name'] === $name) {
-            /** @var \Framework\Console\CommandInterface $command */
-            $command = $container->get($definition['command']);
+    foreach ($commands as $command) {
+        if ($command->getName() === $name) {
+            /** @var \Framework\Console\AbstractCommand $command */
             $command->execute($input, $output);
-
             exit;
         }
     }
@@ -40,8 +34,8 @@ if (! empty($name)) {
 $output->writeln('<comment>Available commands</comment>');
 $output->writeln('');
 
-foreach ($commands as $definition) {
-    $output->writeln('<info>' . $definition['name'] . '</info>' . "\t" . $definition['description']);
+foreach ($commands as $command) {
+    $output->writeln('<info>' . $command->getName() . '</info>' . "\t" . $command->getDescription());
 }
 
 $output->writeln('');

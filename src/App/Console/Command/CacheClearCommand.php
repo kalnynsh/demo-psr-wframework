@@ -2,12 +2,12 @@
 
 namespace App\Console\Command;
 
-use App\Service\FileService\FileManager;
-use Framework\Console\CommandInterface;
 use Framework\Console\Input;
 use Framework\Console\Output;
+use Framework\Console\AbstractCommand;
+use App\Service\FileService\FileManager;
 
-class CacheClearCommand implements CommandInterface
+class CacheClearCommand extends AbstractCommand
 {
     private array $paths;
     private FileManager $files;
@@ -16,6 +16,10 @@ class CacheClearCommand implements CommandInterface
     {
         $this->paths = $paths;
         $this->files = $files;
+
+        $this
+            ->setName('cache:clear')
+            ->setDecription('Clear cache');
     }
 
     public function execute(Input $input, Output $output): void
