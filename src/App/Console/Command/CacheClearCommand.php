@@ -3,10 +3,11 @@
 namespace App\Console\Command;
 
 use App\Service\FileService\FileManager;
+use Framework\Console\CommandInterface;
 use Framework\Console\Input;
 use Framework\Console\Output;
 
-class CacheClearCommand
+class CacheClearCommand implements CommandInterface
 {
     private array $paths;
     private FileManager $files;
@@ -22,7 +23,7 @@ class CacheClearCommand
         $output->writeln('<comment>Running cache clearing...</comment>');
 
         /** @var string $alias */
-        $alias = $input->getArgument(0);
+        $alias = $input->getArgument(1);
 
         if (empty($alias)) {
             $options = array_merge(['all'], array_keys($this->paths));
