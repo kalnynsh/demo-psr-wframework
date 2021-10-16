@@ -2,16 +2,19 @@
 
 namespace App\Console\Command;
 
+use App\Service\FileService\FileManager;
 use Framework\Console\Input;
 use Framework\Console\Output;
 
 class CacheClearCommand
 {
     private array $paths;
+    private FileManager $files;
 
-    public function __construct(array $paths)
+    public function __construct(array $paths, FileManager $files)
     {
         $this->paths = $paths;
+        $this->files = $files;
     }
 
     public function execute(Input $input, Output $output): void
@@ -40,44 +43,17 @@ class CacheClearCommand
 
         /** @var string $path */
         foreach ($paths as $path) {
-            if (file_exists($path)) {
+            if ($this->files->exists($path)) {
                 $output->writeln('Removing: ' . $path);
 
-                $this->delete($path);
+                $this->files->delete($path);
             }
 
-            if (! file_exists($path)) {
+            if (! $this->files->exists($path)) {
                 $output->writeln('Skipping ' . $path);
             }
         }
 
         $output->writeln('<info>Done!</info>');
-    }
-
-    private function delete(string $path): void
-    {
-        if (! file_exists($path)) {
-            throw new \RuntimeException('Given undefined path: ' . $path);
-        }
-
-        if (is_dir($path)) {
-            foreach (scandir($path, SCANDIR_SORT_ASCENDING) as $item) {
-                if ($item === '.' || $item === '..') {
-                    continue;
-                }
-
-                $this->delete($path . DIRECTORY_SEPARATOR . $item);
-            }
-
-            if (! rmdir($path)) {
-                throw new \RuntimeException('Unable to delete directory ' . $path);
-            }
-        }
-
-        if (! is_dir($path)) {
-            if (! unlink($path)) {
-                throw new \RuntimeException('Unable to delete file ' . $path);
-            }
-        }
     }
 }
