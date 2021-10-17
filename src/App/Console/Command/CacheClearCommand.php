@@ -6,6 +6,7 @@ use Framework\Console\Input;
 use Framework\Console\Output;
 use Framework\Console\AbstractCommand;
 use App\Service\FileService\FileManager;
+use Framework\Console\Helper\Question;
 
 class CacheClearCommand extends AbstractCommand
 {
@@ -34,8 +35,14 @@ class CacheClearCommand extends AbstractCommand
         $alias = $input->getArgument(1);
 
         if (empty($alias)) {
-            $options = array_merge(['all'], array_keys($this->paths));
-            $alias = $input->choose('Choose path', $options);
+            $options = \array_merge(['all'], \array_keys($this->paths));
+
+            $alias = Question::choose(
+                $input,
+                $output,
+                'Choose path',
+                $options
+            );
         }
 
         if ($alias === 'all') {
