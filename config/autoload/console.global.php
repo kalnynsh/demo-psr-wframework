@@ -10,6 +10,9 @@ return [
         ],
     ],
     'console' => [
+        'commands' => [
+            Command\CacheClearCommand::class,
+        ],
         'cachePaths' => [
             'twig' => 'var/cache/twig',
         ],
