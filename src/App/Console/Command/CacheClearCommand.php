@@ -24,7 +24,7 @@ class CacheClearCommand extends AbstractCommand
     {
         $this
             ->setName('cache:clear')
-            ->setDecription('Clear cache');
+            ->setDecription('Cache clear');
     }
 
     public function execute(Input $input, Output $output): void
