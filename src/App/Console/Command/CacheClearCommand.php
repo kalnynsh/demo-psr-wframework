@@ -2,13 +2,14 @@
 
 namespace App\Console\Command;
 
-use Framework\Console\Input;
-use Framework\Console\Output;
-use Framework\Console\AbstractCommand;
 use App\Service\FileService\FileManager;
-use Framework\Console\Helper\Question;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 
-class CacheClearCommand extends AbstractCommand
+class CacheClearCommand extends Command
 {
     private array $paths;
     private FileManager $files;
@@ -24,25 +25,23 @@ class CacheClearCommand extends AbstractCommand
     {
         $this
             ->setName('cache:clear')
-            ->setDecription('Cache clear');
+            ->setDescription('Cache clear')
+            ->addArgument('alias', InputArgument::OPTIONAL, 'The alias of available paths.');
     }
 
-    public function execute(Input $input, Output $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('<comment>Running cache clearing...</comment>');
 
         /** @var string $alias */
-        $alias = $input->getArgument(1);
+        $alias = $input->getArgument('alias');
 
         if (empty($alias)) {
+            $helper = $this->getHelper('question');
             $options = \array_merge(['all'], \array_keys($this->paths));
+            $question = new ChoiceQuestion('Choose path', $options, 0);
 
-            $alias = Question::choose(
-                $input,
-                $output,
-                'Choose path',
-                $options
-            );
+            $alias = $helper->ask($input, $output, $question);
         }
 
         if ($alias === 'all') {
@@ -71,5 +70,7 @@ class CacheClearCommand extends AbstractCommand
         }
 
         $output->writeln('<info>Done!</info>');
+
+        return Command::SUCCESS;
     }
 }
