@@ -3,7 +3,7 @@
 
 use Framework\Console\Input;
 use Framework\Console\Output;
-use Framework\Console\Application;
+use Symfony\Component\Console\Application;
 
 chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
@@ -11,12 +11,5 @@ require 'vendor/autoload.php';
 /** @var \Psr\Container\ContainerInterface $container */
 $container = require 'config/container.php';
 
-$cli = new Application();
-
-$commands = $container->get('config')['console']['commands'];
-
-foreach ($commands as $command) {
-    $cli->add($container->get($command));
-}
-
-$cli->run(new Input($argv), new Output);
+$cli = new Application('Console application');
+$cli->run();
