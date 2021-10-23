@@ -2,7 +2,7 @@
 
 namespace App\Http\Action\Blog;
 
-use App\Repository\Post\PostRepository;
+use App\DAO\Post\PostDAO;
 use Psr\Http\Message\ResponseInterface;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface;
@@ -11,11 +11,11 @@ use Framework\Template\TemplateRendererInterface;
 
 class IndexAction implements RequestHandlerInterface
 {
-    private PostRepository $repository;
+    private PostDAO $repository;
     private TemplateRendererInterface $renderer;
 
     public function __construct(
-        PostRepository $repository,
+        PostDAO $repository,
         TemplateRendererInterface $renderer
     ) {
         $this->repository = $repository;

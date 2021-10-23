@@ -2,22 +2,21 @@
 
 namespace App\Http\Action\Blog;
 
+use App\DAO\Post\PostDAO;
 use Framework\Http\Router\Result;
-use App\Repository\Post\PostRepository;
 use Psr\Http\Message\ResponseInterface;
+use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Framework\Template\TemplateRendererInterface;
-use Fig\Http\Message\StatusCodeInterface as StatusCode;
-use Laminas\Diactoros\Response\HtmlResponse;
 
 class ShowAction implements RequestHandlerInterface
 {
-    private PostRepository $repository;
+    private PostDAO $repository;
     private TemplateRendererInterface $renderer;
 
     public function __construct(
-        PostRepository $repository,
+        PostDAO $repository,
         TemplateRendererInterface $renderer
     ) {
         $this->repository = $repository;
@@ -35,7 +34,7 @@ class ShowAction implements RequestHandlerInterface
         /** @var int $id */
         $id = intval($attributesOfResult['id']);
 
-        $foundPost = $this->repository->getPostById($id);
+        $foundPost = $this->repository->find($id);
 
         if ($foundPost) {
             return new HtmlResponse(

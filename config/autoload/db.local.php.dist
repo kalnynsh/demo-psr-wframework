@@ -1,0 +1,11 @@
+<?php
+
+return [
+    'pdo' => [
+        // 'dsn' => 'mysql:host=localhost;port=3306;dbname=app;charset=utf8mb4',
+        // 'dsn' => 'sqlite:db/db.sqlite',
+        'dsn' => 'pgsql:host=localhost;port=5432;dbname=testdb',
+        'username' => 'bruce',
+        'password' => 'mypass',
+    ]
+];

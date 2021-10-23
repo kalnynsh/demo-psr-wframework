@@ -1,22 +1,20 @@
 <?php
 
 use App\Http\Middleware;
+use App\DAO\Post\PostDAO;
 use App\Http\Action\Blog;
+
 use App\Http\Action\Home;
 
 use Psr\Log\LoggerInterface;
-
 use Framework\Http\Application;
 use Laminas\Diactoros\Response;
 use Aura\Router\RouterContainer;
+
 use Psr\Container\ContainerInterface;
 
-use App\Repository\Post\PostRepository;
-
-use App\DataGenerator\Post\PostGenerator;
-
-use App\Console\Command\CacheClearCommand;
 use App\Service\FileService\FileManager;
+use App\Console\Command\CacheClearCommand;
 use Framework\Http\Router\RouterInterface;
 use Framework\Http\Middleware\RouteMiddleware;
 use Framework\Http\Pipeline\MiddlewareResolver;
@@ -46,7 +44,6 @@ return [
             Middleware\CredentialsMiddleware::class => InvokableFactory::class,
             FileManager::class => InvokableFactory::class,
 
-            PostGenerator::class => InvokableFactory::class,
             CacheClearCommand::class => InvokableFactory::class,
 
             Application::class => Infrastructure\Framework\Http\Application\ApplicationFactory::class,
@@ -107,7 +104,7 @@ return [
             Blog\IndexAction::class =>
             function (ContainerInterface $container, string $requestedName, ?array $options = null) {
                 return new  Blog\IndexAction(
-                    $container->get(PostRepository::class),
+                    $container->get(PostDAO::class),
                     $container->get(TemplateRendererInterface::class)
                 );
             },
@@ -115,17 +112,12 @@ return [
             Blog\ShowAction::class =>
             function (ContainerInterface $container, string $requestedName, ?array $options = null) {
                 return new Blog\ShowAction(
-                    $container->get(PostRepository::class),
+                    $container->get(PostDAO::class),
                     $container->get(TemplateRendererInterface::class)
                 );
             },
 
-            PostRepository::class =>
-            function (ContainerInterface $container, string $requestedName, ?array $options = null) {
-                return new PostRepository(
-                    $container->get(PostGenerator::class)
-                );
-            },
+            PostDAO::class =>Infrastructure\App\DAO\Post\PostDAOfactory::class,
 
             NotFoundHandler::class =>
             function (ContainerInterface $container, string $requestedName, ?array $options = null) {
