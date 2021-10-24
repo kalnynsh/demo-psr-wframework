@@ -7,5 +7,9 @@ return [
         'dsn' => 'pgsql:host=localhost;port=5432;dbname=testdb',
         'username' => 'bruce',
         'password' => 'mypass',
-    ]
+    ],
+
+    'phinx' => [
+        'database' => 'testdb',
+    ],
 ];
