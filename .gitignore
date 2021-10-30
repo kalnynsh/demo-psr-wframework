@@ -13,3 +13,5 @@ var
 .php-files.json
 
 .ready
+
+phinx.php
