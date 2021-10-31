@@ -7,7 +7,7 @@
 {% block meta %}
     <meta
         name="description"
-        content="Posts page"
+        content="Posts"
     />
 {% endblock meta %}
 
@@ -72,6 +72,13 @@
         </div>
 
     {% endfor %}
+
+    {% include 'share/pager.html.twig' with {
+        'pager': pager,
+        'main_route': 'blog',
+        'route': 'blog_page'
+    } %}
+
 </div>
 
 {% endblock content %}

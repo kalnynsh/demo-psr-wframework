@@ -15,16 +15,20 @@ class PostDAO
     }
 
     /**
+     * @param int $offset
+     * @param int $limit
     *
     * @return PostEntity[]
     */
-    public function getAll(): array
+    public function getAll(int $offset, int $limit): array
     {
-        $stmt = $this->pdo->query(
+        $stmt = $this->pdo->prepare(
             'SELECT * FROM '
             . $this->tableName
-            . ' ORDER BY id DESC'
+            . ' ORDER BY id DESC LIMIT ? OFFSET ?'
         );
+
+        $stmt->execute([$limit, $offset]);
 
         return \array_map([$this, 'postMap'], $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
@@ -41,12 +45,12 @@ class PostDAO
     public function getAmount(): int
     {
         $stmt = $this->pdo->query(
-            'SELECT COUNT(*) FROM'
+            'SELECT COUNT(id) FROM '
             . $this->tableName
             . ' WHERE 1 = 1'
         );
 
-        return ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) ? (int) $row['id'] : 0;
+        return $stmt->fetchColumn(0) === false ? 0 : $stmt->fetchColumn(0);
     }
 
     private function postMap(array $row): PostEntity

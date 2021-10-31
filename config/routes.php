@@ -16,11 +16,21 @@ $app->get(
 
 $app->get('blog', '/blog', Action\Blog\IndexAction::class);
 
+
+$app->get(
+    'blog_page',
+    '/blog/page/{page}',
+    Action\Blog\IndexAction::class,
+    [
+        'tokens' => ['page' => '\d+',],
+    ]
+);
+
 $app->get(
     'blog_show',
     '/blog/{id}',
     Action\Blog\ShowAction::class,
     [
-        'tokens' => ['id' => '\\d+',],
+        'tokens' => ['id' => '\d+',],
     ]
 );
