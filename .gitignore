@@ -15,3 +15,5 @@ var
 .ready
 
 phinx.php
+
+migrations-db.php
