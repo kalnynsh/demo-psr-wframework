@@ -10,12 +10,12 @@ use Doctrine\ORM\Mapping as ORM;
 class Meta
 {
     /**
-     * @ORM\Column(type="string", nullabel=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     private string $title;
 
     /**
-     * @ORM\Column(type="string", nullabel=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     private string $description;
 

@@ -24,7 +24,7 @@ class Comment
     private int $id;
 
     /**
-     * @ORM\Column("datetime_imutable")
+     * @ORM\Column(type="datetime_immutable")
      */
     private \DateTimeImmutable $date;
 

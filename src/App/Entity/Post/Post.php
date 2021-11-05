@@ -19,12 +19,12 @@ class Post
     private int $id;
 
     /**
-     * @ORM\Column("datetime_imutable", name="create_date")
+     * @ORM\Column(type="datetime_immutable", name="create_date")
      */
     private \DateTimeImmutable $createDate;
 
     /**
-     * @ORM\Column("datetime_imutable", name="update_date")
+     * @ORM\Column(type="datetime_immutable", name="update_date", nullable=true)
      */
     private \DateTimeImmutable $updateDate;
 
