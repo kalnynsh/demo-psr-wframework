@@ -1,0 +1,10 @@
+<?php
+
+return [
+    'dbname' => 'db-name',
+    'user' => 'username',
+    'password' => 'very-secret',
+    'host' => 'postgres-container-name',
+    'port' => '5432',
+    'driver' => 'pdo_pgsql',
+];

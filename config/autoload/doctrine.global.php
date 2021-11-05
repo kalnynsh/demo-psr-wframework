@@ -1,9 +1,53 @@
 <?php
 
+$dbConnectionParams = require dirname(__DIR__, 2)
+    . DIRECTORY_SEPARATOR
+    . 'migrations-db'
+    . '.php';
+
 return [
     'dependencies' => [
         'factories' => [
-            \Doctrine\ORM\EntityManagerInterface::class => \Roave\PsrContainerDoctrine\EntityManagerFactory::class,
+            \Doctrine\ORM\EntityManagerInterface::class
+                => \Roave\PsrContainerDoctrine\EntityManagerFactory::class,
+
+            'doctrine.connection.orm_default'
+                => \Roave\PsrContainerDoctrine\ConnectionFactory::class,
+
+            'doctrine.configuration.orm_default'
+                => \Roave\PsrContainerDoctrine\ConfigurationFactory::class,
+
+            'doctrine.driver.orm_default'
+                => \Roave\PsrContainerDoctrine\DriverFactory::class,
+
+            \Doctrine\Migrations\Configuration\Migration\ConfigurationLoader::class
+                => \Roave\PsrContainerDoctrine\Migrations\ConfigurationLoaderFactory::class,
+
+            \Doctrine\Migrations\DependencyFactory::class
+                => \Roave\PsrContainerDoctrine\Migrations\DependencyFactoryFactory::class,
+
+            \Doctrine\Migrations\Tools\Console\Command\ExecuteCommand::class
+                => \Roave\PsrContainerDoctrine\Migrations\CommandFactory::class,
+            \Doctrine\Migrations\Tools\Console\Command\GenerateCommand::class
+                => \Roave\PsrContainerDoctrine\Migrations\CommandFactory::class,
+            \Doctrine\Migrations\Tools\Console\Command\LatestCommand::class
+                => \Roave\PsrContainerDoctrine\Migrations\CommandFactory::class,
+            \Doctrine\Migrations\Tools\Console\Command\MigrateCommand::class
+                => \Roave\PsrContainerDoctrine\Migrations\CommandFactory::class,
+            \Doctrine\Migrations\Tools\Console\Command\DiffCommand::class
+                => \Roave\PsrContainerDoctrine\Migrations\CommandFactory::class,
+            \Doctrine\Migrations\Tools\Console\Command\UpToDateCommand::class
+                => \Roave\PsrContainerDoctrine\Migrations\CommandFactory::class,
+            \Doctrine\Migrations\Tools\Console\Command\StatusCommand::class
+                => \Roave\PsrContainerDoctrine\Migrations\CommandFactory::class,
+            \Doctrine\Migrations\Tools\Console\Command\VersionCommand::class
+                => \Roave\PsrContainerDoctrine\Migrations\CommandFactory::class,
+            \Doctrine\Migrations\Tools\Console\Command\ListCommand::class
+                => \Roave\PsrContainerDoctrine\Migrations\CommandFactory::class,
+            \Doctrine\Migrations\Tools\Console\Command\RollupCommand::class
+                => \Roave\PsrContainerDoctrine\Migrations\CommandFactory::class,
+            \Doctrine\Migrations\Tools\Console\Command\SyncMetadataCommand::class
+                => \Roave\PsrContainerDoctrine\Migrations\CommandFactory::class,
         ],
     ],
 
@@ -14,7 +58,7 @@ return [
                 'metadata_cache' => 'array',
                 'query_cache' => 'array',
                 'hydration_cache' => 'array',
-                'driver' => 'orm_default', // Actually defaults to the configuration config key, not hard-coded
+                'driver' => 'orm_default',
                 'auto_generate_proxy_classes' => true,
                 'proxy_dir' => 'var/cache/DoctrineEntityProxy',
                 'proxy_namespace' => 'DoctrineEntityProxy',
@@ -49,15 +93,15 @@ return [
                 'configuration' => 'orm_default',
                 'event_manager' => 'orm_default',
                 'wrapper_class' => null,
-                'params' => [],
+                'params' => $dbConnectionParams,
                 'doctrine_mapping_types' => [],
                 'doctrine_commented_types' => [],
             ],
         ],
         'entity_manager' => [
             'orm_default' => [
-                'connection' => 'orm_default', // Actually defaults to the entity manager config key, not hard-coded
-                'configuration' => 'orm_default', // Actually defaults to the entity manager config key, not hard-coded
+                'connection' => 'orm_default',
+                'configuration' => 'orm_default',
             ],
         ],
         'event_manager' => [
@@ -85,9 +129,9 @@ return [
         'migrations' => [
             'orm_default' => [
                 'table_storage' => [
-                    'table_name' => 'migrations_executed',
+                    'table_name' => 'doctrine_migration_versions',
                     'version_column_name' => 'version',
-                    'version_column_length' => 255,
+                    'version_column_length' => 1024,
                     'executed_at_column_name' => 'executed_at',
                     'execution_time_column_name' => 'execution_time',
                 ],
