@@ -30,7 +30,7 @@ class FixtureCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('<comment>Loading fixtures</comment>');
 
@@ -46,5 +46,7 @@ class FixtureCommand extends Command
         $executor->execute($loader->getFixtures());
 
         $output->writeln('<info>Done!</info>');
+
+        return 0;
     }
 }

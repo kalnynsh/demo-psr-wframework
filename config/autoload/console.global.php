@@ -15,6 +15,7 @@ return [
     'console' => [
         'commands' => [
             Command\CacheClearCommand::class,
+            Command\FixtureCommand::class,
             \Doctrine\Migrations\Tools\Console\Command\ExecuteCommand::class,
             \Doctrine\Migrations\Tools\Console\Command\GenerateCommand::class,
             \Doctrine\Migrations\Tools\Console\Command\LatestCommand::class,

@@ -94,7 +94,7 @@ class Post
 
     public function getUpdateDate(): \DateTimeImmutable
     {
-        return $this->createDate;
+        return $this->updateDate;
     }
 
     public function getTitle(): string
@@ -110,5 +110,10 @@ class Post
     public function getMeta(): Meta
     {
         return $this->meta;
+    }
+
+    public function setUpdateDate(\DateTimeImmutable $updatedAt): void
+    {
+        $this->updateDate = $updatedAt;
     }
 }
