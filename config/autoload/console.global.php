@@ -7,6 +7,9 @@ return [
         'factories' => [
             Command\CacheClearCommand::class
                 => \Infrastructure\App\Console\Command\CacheClearCommandFactory::class,
+
+            Command\FixtureCommand::class
+                => Infrastructure\App\Console\Command\FixtureCommandFactory::class,
         ],
     ],
     'console' => [
