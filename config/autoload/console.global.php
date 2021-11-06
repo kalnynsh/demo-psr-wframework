@@ -7,15 +7,11 @@ return [
         'factories' => [
             Command\CacheClearCommand::class
                 => \Infrastructure\App\Console\Command\CacheClearCommandFactory::class,
-
-            Command\FixtureCommand::class
-                => Infrastructure\App\Console\Command\FixtureCommandFactory::class,
         ],
     ],
     'console' => [
         'commands' => [
             Command\CacheClearCommand::class,
-            Command\FixtureCommand::class,
             \Doctrine\Migrations\Tools\Console\Command\ExecuteCommand::class,
             \Doctrine\Migrations\Tools\Console\Command\GenerateCommand::class,
             \Doctrine\Migrations\Tools\Console\Command\LatestCommand::class,

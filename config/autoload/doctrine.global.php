@@ -1,9 +1,11 @@
 <?php
 
-$dbConnectionParams = require dirname(__DIR__, 2)
+$doctrineLocal = require __DIR__
     . DIRECTORY_SEPARATOR
-    . 'migrations-db'
+    . 'doctrine.local'
     . '.php';
+
+$dbConnectionParams = $doctrineLocal['doctrine']['connection']['orm_default']['params'];
 
 return [
     'dependencies' => [
