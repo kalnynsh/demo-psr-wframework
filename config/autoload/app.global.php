@@ -13,6 +13,7 @@ use Aura\Router\RouterContainer;
 
 use Psr\Container\ContainerInterface;
 
+use App\Repository\Post\PostRepository;
 use App\Service\FileService\FileManager;
 use App\Console\Command\CacheClearCommand;
 use Framework\Http\Router\RouterInterface;
@@ -80,6 +81,8 @@ return [
 
             PathMiddlewareDecorator::class => BasicAuthMiddlewarePathFactory::class,
 
+            PostRepository::class => Infrastructure\App\Repository\Post\PostRepositoryFactory::class,
+
             Home\IndexAction::class =>
             function (ContainerInterface $container, string $requestedName, ?array $options = null) {
                 return new Home\IndexAction(
@@ -104,7 +107,7 @@ return [
             Blog\IndexAction::class =>
             function (ContainerInterface $container, string $requestedName, ?array $options = null) {
                 return new  Blog\IndexAction(
-                    $container->get(PostDAO::class),
+                    $container->get(PostRepository::class),
                     $container->get(TemplateRendererInterface::class)
                 );
             },
@@ -112,12 +115,10 @@ return [
             Blog\ShowAction::class =>
             function (ContainerInterface $container, string $requestedName, ?array $options = null) {
                 return new Blog\ShowAction(
-                    $container->get(PostDAO::class),
+                    $container->get(PostRepository::class),
                     $container->get(TemplateRendererInterface::class)
                 );
             },
-
-            PostDAO::class =>Infrastructure\App\DAO\Post\PostDAOfactory::class,
 
             NotFoundHandler::class =>
             function (ContainerInterface $container, string $requestedName, ?array $options = null) {

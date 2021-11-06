@@ -82,6 +82,22 @@ class Post
         throw new \DomainException('Comment is not found.');
     }
 
+    /**
+     * @return Comment[]
+     */
+    public function getComments(): array
+    {
+        return $this->comments->toArray();
+    }
+
+    /**
+     * @return int
+     */
+    public function getCommentsCount(): int
+    {
+        return $this->comments->count();
+    }
+
     public function getId(): int
     {
         return $this->id;

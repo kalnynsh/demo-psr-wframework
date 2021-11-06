@@ -2,8 +2,8 @@
 
 namespace App\Http\Action\Blog;
 
-use App\DAO\Post\PostDAO;
 use Framework\Http\Router\Result;
+use App\Repository\Post\PostRepository;
 use Psr\Http\Message\ResponseInterface;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,11 +12,11 @@ use Framework\Template\TemplateRendererInterface;
 
 class ShowAction implements RequestHandlerInterface
 {
-    private PostDAO $repository;
+    private PostRepository $repository;
     private TemplateRendererInterface $renderer;
 
     public function __construct(
-        PostDAO $repository,
+        PostRepository $repository,
         TemplateRendererInterface $renderer
     ) {
         $this->repository = $repository;

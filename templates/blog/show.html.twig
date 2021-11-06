@@ -56,11 +56,11 @@
 
                     <div class="col-md-8">
                         <h4 class="display-7 fw-bold">
-                            {{ post.date|date('Y-m-d') }} : {{ post.title }}
+                            {{ post.createDate|date('Y-m-d') }} : {{ post.title }} <span class="badge bg-info">{{ post.commentsCount }} comments</span>
                         </h4>
 
                         <p class="fs-2">
-                            {{ post.content|nl2br }}
+                            {{ post.content.full|nl2br }}
                         </p>
                     </div>
 
