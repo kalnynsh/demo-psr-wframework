@@ -14,13 +14,24 @@ class PostDAO
         $this->pdo = $pdo;
     }
 
+    public function countAll(): int
+    {
+        return (int) $this
+                ->pdo
+                ->query(
+                    'SELECT COUNT(id) FROM posts'
+                )
+                ->fetchColumn()
+        ;
+    }
+
     /**
      * @param int $offset
      * @param int $limit
     *
     * @return PostEntity[]
     */
-    public function getAll(int $offset, int $limit): array
+    public function all(int $offset, int $limit): array
     {
         $stmt = $this->pdo->prepare(
             'SELECT * FROM '

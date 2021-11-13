@@ -60,12 +60,12 @@
 
                 <a href="{{ path('blog_show', {'id': post.id}) }}">
                     <h4 class="display-7 fw-bold">
-                        {{ post.createDate|date('Y-m-d') }}: {{ post.title }} <span class="badge bg-info">{{ post.commentsCount }} comments</span>
+                        {{ post.date|date('Y-m-d') }}: {{ post.title }} <span class="badge bg-info">{{ post.commentsCount }} comments</span>
                     </h4>
                 </a>
 
                 <p class="col-md-8 fs-4">
-                    {{ post.content.short|nl2br }}
+                    {{ post.preview|nl2br }}
                 </p>
 
             </div>

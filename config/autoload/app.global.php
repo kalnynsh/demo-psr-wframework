@@ -1,18 +1,18 @@
 <?php
 
 use App\Http\Middleware;
-use App\DAO\Post\PostDAO;
 use App\Http\Action\Blog;
 
 use App\Http\Action\Home;
 
 use Psr\Log\LoggerInterface;
+use App\DAO\Post\PostArrayDAO;
 use Framework\Http\Application;
 use Laminas\Diactoros\Response;
+
 use Aura\Router\RouterContainer;
 
 use Psr\Container\ContainerInterface;
-
 use App\Repository\Post\PostRepository;
 use App\Service\FileService\FileManager;
 use App\Console\Command\CacheClearCommand;
@@ -81,7 +81,9 @@ return [
 
             PathMiddlewareDecorator::class => BasicAuthMiddlewarePathFactory::class,
 
-            PostRepository::class => Infrastructure\App\Repository\Post\PostRepositoryFactory::class,
+            PostRepository::class => \Infrastructure\App\Repository\Post\PostRepositoryFactory::class,
+
+            PostArrayDAO::class => \Infrastructure\App\DAO\Post\PostArrayDAOfactory::class,
 
             Home\IndexAction::class =>
             function (ContainerInterface $container, string $requestedName, ?array $options = null) {
@@ -107,7 +109,7 @@ return [
             Blog\IndexAction::class =>
             function (ContainerInterface $container, string $requestedName, ?array $options = null) {
                 return new  Blog\IndexAction(
-                    $container->get(PostRepository::class),
+                    $container->get(PostArrayDAO::class),
                     $container->get(TemplateRendererInterface::class)
                 );
             },
@@ -115,7 +117,7 @@ return [
             Blog\ShowAction::class =>
             function (ContainerInterface $container, string $requestedName, ?array $options = null) {
                 return new Blog\ShowAction(
-                    $container->get(PostRepository::class),
+                    $container->get(PostArrayDAO::class),
                     $container->get(TemplateRendererInterface::class)
                 );
             },

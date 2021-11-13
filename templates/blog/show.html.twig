@@ -56,12 +56,29 @@
 
                     <div class="col-md-8">
                         <h4 class="display-7 fw-bold">
-                            {{ post.createDate|date('Y-m-d') }} : {{ post.title }} <span class="badge bg-info">{{ post.commentsCount }} comments</span>
+                            {{ post.date|date('Y-m-d') }} : {{ post.title }} <span class="badge bg-info">{{ post.commentsCount }} comments</span>
                         </h4>
 
-                        <p class="fs-2">
-                            {{ post.content.full|nl2br }}
+                        <p class="fs-3">
+                            {{ post.content|nl2br }}
                         </p>
+
+                        <h5 class="fw-bold">Comments</h5>
+
+                        {% for comment in post.comments %}
+                            <div class="card">
+                                <div class="card-header">
+                                    <span class="badge bg-secondary">{{ comment.date|date('Y-m-d') }}</span>
+                                    {{ comment.author }}
+                                </div>
+
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        {{ comment.text|nl2br }}
+                                    </p>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
 
                 </div>

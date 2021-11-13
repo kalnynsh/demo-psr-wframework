@@ -2,7 +2,7 @@
 
 namespace App\Http\Action\Blog;
 
-use App\Repository\Post\PostRepository;
+use App\DAO\Post\PostArrayDAO;
 use App\Service\Pagination\Pagination;
 use Psr\Http\Message\ResponseInterface;
 use Laminas\Diactoros\Response\HtmlResponse;
@@ -14,11 +14,11 @@ class IndexAction implements RequestHandlerInterface
 {
     private const PER_PAGE = 3;
 
-    private PostRepository $repository;
+    private PostArrayDAO $repository;
     private TemplateRendererInterface $renderer;
 
     public function __construct(
-        PostRepository $repository,
+        PostArrayDAO $repository,
         TemplateRendererInterface $renderer
     ) {
         $this->repository = $repository;
