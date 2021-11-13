@@ -1,12 +1,5 @@
 <?php
 
-$doctrineLocal = require __DIR__
-    . DIRECTORY_SEPARATOR
-    . 'doctrine.local'
-    . '.php';
-
-$dbConnectionParams = $doctrineLocal['doctrine']['connection']['orm_default']['params'];
-
 return [
     'dependencies' => [
         'factories' => [
@@ -95,7 +88,7 @@ return [
                 'configuration' => 'orm_default',
                 'event_manager' => 'orm_default',
                 'wrapper_class' => null,
-                'params' => $dbConnectionParams,
+                'params' => [],
                 'doctrine_mapping_types' => [],
                 'doctrine_commented_types' => [],
             ],
