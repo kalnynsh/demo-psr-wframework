@@ -26,6 +26,7 @@ return [
         ],
         'cachePaths' => [
             'twig' => 'var/cache/twig',
+            'doctrine' => 'var/cache/doctrine',
         ],
     ],
 ];
