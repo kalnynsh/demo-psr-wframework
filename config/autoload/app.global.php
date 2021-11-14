@@ -18,6 +18,7 @@ use App\Service\FileService\FileManager;
 use App\Console\Command\CacheClearCommand;
 use Framework\Http\Router\RouterInterface;
 use Framework\Http\Middleware\RouteMiddleware;
+use Framework\Http\Middleware\BodyParamsMiddleware;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Template\TemplateRendererInterface;
 use Framework\Http\Middleware\DispatcherMiddleware;
@@ -44,6 +45,7 @@ return [
             Middleware\ProfilerMiddleware::class => InvokableFactory::class,
             Middleware\CredentialsMiddleware::class => InvokableFactory::class,
             FileManager::class => InvokableFactory::class,
+            BodyParamsMiddleware::class => InvokableFactory::class,
 
             CacheClearCommand::class => InvokableFactory::class,
 

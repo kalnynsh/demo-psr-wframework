@@ -14,6 +14,8 @@ $app->pipe(\App\Http\Middleware\ProfilerMiddleware::class);
 
 $app->pipe(\App\Http\Middleware\CredentialsMiddleware::class);
 
+$app->pipe(\Framework\Http\Middleware\BodyParamsMiddleware::class);
+
 $app->pipe(\Framework\Http\Middleware\RouteMiddleware::class);
 
 $app->pipe(PathMiddlewareDecorator::class);
