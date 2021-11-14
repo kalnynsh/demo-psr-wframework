@@ -9,6 +9,8 @@ use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Framework\Template\TemplateRendererInterface;
+use Laminas\Diactoros\Response\EmptyResponse;
+use Fig\Http\Message\StatusCodeInterface as StatusCode;
 
 class ShowAction implements RequestHandlerInterface
 {
@@ -44,6 +46,6 @@ class ShowAction implements RequestHandlerInterface
             );
         }
 
-        return new HtmlResponse('<p>Post not found</p>');
+        return new EmptyResponse(StatusCode::STATUS_NOT_FOUND);
     }
 }

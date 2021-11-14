@@ -25,6 +25,7 @@ class DispatcherMiddleware implements MiddlewareInterface
 
         /** @var Result $result */
         if (! $result = $request->getAttribute(Result::class)) {
+
             return $handler->handle($request);
         }
 

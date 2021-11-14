@@ -81,6 +81,9 @@ return [
 
             PathMiddlewareDecorator::class => BasicAuthMiddlewarePathFactory::class,
 
+            \App\Http\Middleware\EmptyResponseMiddleware::class =>
+                \Infrastructure\App\Http\Middleware\Response\EmptyResponseMiddlewareFactory::class,
+
             PostRepository::class => \Infrastructure\App\Repository\Post\PostRepositoryFactory::class,
 
             PostArrayDAO::class => \Infrastructure\App\DAO\Post\PostArrayDAOfactory::class,
