@@ -37,6 +37,17 @@ services:
             POSTGRES_DB: app
         ports:
             - '54321:5432'
+  psrfw-node-watch:
+    image: node:current-alpine
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && npm run watch"
+  psrfw-node:
+    image: node:current-alpine
+    volumes:
+      - ./:/app
+    working_dir: /app
 
 volumes:
   composer:

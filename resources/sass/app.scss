@@ -1,0 +1,19 @@
+@import "~font-awesome/scss/font-awesome";
+@import "~bootstrap/scss/bootstrap";
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.body-content {
+    flex: 1 0 auto;
+}
+
+.sticky-footer {
+    flex-shrink: 0;
+}

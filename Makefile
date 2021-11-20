@@ -1,7 +1,7 @@
 up: docker-up
 down: docker-down
 restart: docker-down docker-up
-init: docker-down-clear psrfw-clear docker-pull docker-build docker-up psrfw-composer-install psrfw-composer-dev-enable psrfw-ready psrfw-init rights
+init: docker-down-clear psrfw-clear docker-pull docker-build docker-up psrfw-init psrfw-ready psrfw-init rights
 rights: psrfw-cli-rightes psrfw-fpm-rightes
 
 composer-update: psrfw-composer-update
@@ -24,7 +24,7 @@ docker-pull:
 docker-build:
 	docker-compose build
 
-psrfw-init: psrfw-composer-install
+psrfw-init: psrfw-composer-install psrfw-composer-dev-enable
 
 psrfw-composer-install:
 	docker-compose run --rm psrfw-php-cli composer install
@@ -58,3 +58,12 @@ psrfw-composer-dev-disable:
 
 psrfw-composer-upgrade:
 	docker-compose run --rm psrfw-php-cli composer upgrade
+
+psrfw-assets-watch:
+	docker-compose run --rm psrfw-node-watch npm run watch
+
+psrfw-assets-install-mix:
+	docker-compose run --rm psrfw-node npm install laravel-mix --save-dev
+
+psrfw-assets-install:
+	docker-compose run --rm psrfw-node npm install

@@ -6,6 +6,8 @@ projectInfo
 
 .phpunit.result.cache
 
+phpunit.xml
+
 .directory
 
 var
@@ -17,3 +19,5 @@ var
 phinx.php
 
 migrations-db.php
+
+node_modules
