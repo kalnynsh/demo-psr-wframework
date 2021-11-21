@@ -50,25 +50,29 @@
 <div class="container py-4">
 
     <h1>Blog</h1>
+    {% set image_id = 1 %}
 
     {% for post in posts %}
 
-        <div class="p-5 mb-2 bg-light rounded-3">
-
-            <div class="container-fluid py-1">
-
+        <div class="card p-5 mb-2" style="width:71rem">
+            <div class="card-header">
                 <a href="{{ path('blog_show', {'id': post.id}) }}">
-                    <h4 class="display-7 fw-bold">
+                    <h4 class="display-8 fw-bold card-title">
                         {{ post.date|date('Y-m-d') }}: {{ post.title }} <span class="badge bg-info">{{ post.commentsCount }} comments</span>
                     </h4>
                 </a>
+            </div>
 
-                <p class="col-md-8 fs-4">
-                    {{ post.preview|nl2br }}
-                </p>
+            <div class="card-img-top">
+                <img src="https://picsum.photos/id/{{image_id}}/1100/740" alt="post_image" width="100%">
+            </div>
 
+            <div class="card-body">
+              <p class="card-text">{{ post.preview|nl2br }}</p>
             </div>
         </div>
+
+        {% set image_id = image_id + 1 %}
 
     {% endfor %}
 
